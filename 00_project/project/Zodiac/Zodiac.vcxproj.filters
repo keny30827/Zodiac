@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\app">
+      <UniqueIdentifier>{cfa4e3bd-909f-43a9-8c39-58308dc8021f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphics">
+      <UniqueIdentifier>{a9e6ca58-2f3e-4a78-af1b-48b5e1100b09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object">
+      <UniqueIdentifier>{a1daf568-55d5-4776-a38c-75b571e01c28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object\player">
+      <UniqueIdentifier>{9a6230fa-b16e-419b-8de4-fedef83efc3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\shader">
+      <UniqueIdentifier>{cd4610b2-6769-4903-88c4-3c0300b898d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object\model">
+      <UniqueIdentifier>{8e42faab-bb73-4be8-8a67-6bc7ac535603}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\shader\header">
+      <UniqueIdentifier>{f643150c-acff-45e9-8546-d202974e4653}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object\camera">
+      <UniqueIdentifier>{f64e8347-e7ed-45d9-87a2-46377c24c29e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object\motion">
+      <UniqueIdentifier>{48b72877-51d3-412f-94b9-9b3a37678bac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object\render_target">
+      <UniqueIdentifier>{b19c6379-12b8-43ca-8c87-c6ebf81b43d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphics\pass">
+      <UniqueIdentifier>{34d5773a-9ec2-4fb4-bf14-3fb554766ada}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object\material">
+      <UniqueIdentifier>{150653ee-0e34-454e-8a9a-bcde47614f81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object\vertex">
+      <UniqueIdentifier>{9cea33d8-fa84-4f1d-9ab1-f9fa89999437}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object\bone">
+      <UniqueIdentifier>{771a5fa7-1043-462f-9e2c-e12fa9eb42e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object\sprite">
+      <UniqueIdentifier>{89a86234-3f01-49b1-aaba-47e9f8e8cc63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object\depth_stencil">
+      <UniqueIdentifier>{007c895b-2305-434a-ad46-7f9cbd9994e3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Application.cpp">
+      <Filter>ソース ファイル\app</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GraphicsController.cpp">
+      <Filter>ソース ファイル\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="object\player\Player.cpp">
+      <Filter>ソース ファイル\object\player</Filter>
+    </ClCompile>
+    <ClCompile Include="object\model\Model.cpp">
+      <Filter>ソース ファイル\object\model</Filter>
+    </ClCompile>
+    <ClCompile Include="object\camera\Camera.cpp">
+      <Filter>ソース ファイル\object\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="object\motion\Motion.cpp">
+      <Filter>ソース ファイル\object\motion</Filter>
+    </ClCompile>
+    <ClCompile Include="object\render_target\RenderTarget.cpp">
+      <Filter>ソース ファイル\object\render_target</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GraphicsResourceManager.cpp">
+      <Filter>ソース ファイル\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\pass\RenderPassTest.cpp">
+      <Filter>ソース ファイル\graphics\pass</Filter>
+    </ClCompile>
+    <ClCompile Include="object\material\Material.cpp">
+      <Filter>ソース ファイル\object\material</Filter>
+    </ClCompile>
+    <ClCompile Include="object\bone\Bone.cpp">
+      <Filter>ソース ファイル\object\bone</Filter>
+    </ClCompile>
+    <ClCompile Include="object\vertex\Vertex.cpp">
+      <Filter>ソース ファイル\object\vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="object\render_target\Texture.cpp">
+      <Filter>ソース ファイル\object\render_target</Filter>
+    </ClCompile>
+    <ClCompile Include="object\sprite\Sprite.cpp">
+      <Filter>ソース ファイル\object\sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\pass\RenderPassSprite.cpp">
+      <Filter>ソース ファイル\graphics\pass</Filter>
+    </ClCompile>
+    <ClCompile Include="object\depth_stencil\ShadowMap.cpp">
+      <Filter>ソース ファイル\object\depth_stencil</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\shader\ShaderManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\shader\Blur\GaussianBlur.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="app\Application.h">
+      <Filter>ソース ファイル\app</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GraphicsController.h">
+      <Filter>ソース ファイル\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="object\player\Player.h">
+      <Filter>ソース ファイル\object\player</Filter>
+    </ClInclude>
+    <ClInclude Include="object\model\Model.h">
+      <Filter>ソース ファイル\object\model</Filter>
+    </ClInclude>
+    <ClInclude Include="object\camera\Camera.h">
+      <Filter>ソース ファイル\object\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="object\motion\Motion.h">
+      <Filter>ソース ファイル\object\motion</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GraphicsDefs.h">
+      <Filter>ソース ファイル\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="object\render_target\RenderTarget.h">
+      <Filter>ソース ファイル\object\render_target</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GraphicsResourceManager.h">
+      <Filter>ソース ファイル\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\pass\RenderPassTest.h">
+      <Filter>ソース ファイル\graphics\pass</Filter>
+    </ClInclude>
+    <ClInclude Include="object\material\Material.h">
+      <Filter>ソース ファイル\object\material</Filter>
+    </ClInclude>
+    <ClInclude Include="object\bone\Bone.h">
+      <Filter>ソース ファイル\object\bone</Filter>
+    </ClInclude>
+    <ClInclude Include="object\vertex\Vertex.h">
+      <Filter>ソース ファイル\object\vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="object\render_target\Texture.h">
+      <Filter>ソース ファイル\object\render_target</Filter>
+    </ClInclude>
+    <ClInclude Include="object\sprite\Sprite.h">
+      <Filter>ソース ファイル\object\sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\pass\RenderPassSprite.h">
+      <Filter>ソース ファイル\graphics\pass</Filter>
+    </ClInclude>
+    <ClInclude Include="object\depth_stencil\ShadowMap.h">
+      <Filter>ソース ファイル\object\depth_stencil</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\shader\ShaderManager.h" />
+    <ClInclude Include="graphics\shader\Blur\GaussianBlur.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shader\BasicVertexShader.hlsl">
+      <Filter>ソース ファイル\shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\BasicPixelShader.hlsl">
+      <Filter>ソース ファイル\shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\SpritePixelShader.hlsl">
+      <Filter>ソース ファイル\shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\SpriteVertexShader.hlsl">
+      <Filter>ソース ファイル\shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ShadowVertexShader.hlsl">
+      <Filter>ソース ファイル\shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\DeferredSpritePixelShader.hlsl">
+      <Filter>ソース ファイル\shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\BloomSpritePixelShader.hlsl">
+      <Filter>ソース ファイル\shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\SSAOSpritePixelShader.hlsl">
+      <Filter>ソース ファイル\shader</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\blur\GaussianBlurVS.hlsl" />
+    <FxCompile Include="shader\blur\GaussianBlurPS.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\header\DataSet.hlsli">
+      <Filter>ソース ファイル\shader\header</Filter>
+    </None>
+    <None Include="shader\header\SpriteDataSet.hlsli">
+      <Filter>ソース ファイル\shader\header</Filter>
+    </None>
+    <None Include="shader\header\ShadowDataSet.hlsli">
+      <Filter>ソース ファイル\shader\header</Filter>
+    </None>
+    <None Include="shader\blur\GaussianBlurDataSet.hlsli" />
+  </ItemGroup>
+</Project>

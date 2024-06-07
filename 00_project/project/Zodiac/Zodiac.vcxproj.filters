@@ -57,6 +57,15 @@
     <Filter Include="ソース ファイル\object\depth_stencil">
       <UniqueIdentifier>{007c895b-2305-434a-ad46-7f9cbd9994e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\shader\blur">
+      <UniqueIdentifier>{f96d5856-995b-4d9c-85f2-eed026f696fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphics\shader">
+      <UniqueIdentifier>{b5005c59-79f9-4ec1-9e2a-c3c5505483a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphics\shader\blur">
+      <UniqueIdentifier>{3f098006-dcb3-4f6c-b4f8-fe0008c9711f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -110,11 +119,11 @@
     <ClCompile Include="object\depth_stencil\ShadowMap.cpp">
       <Filter>ソース ファイル\object\depth_stencil</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\shader\ShaderManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="graphics\shader\Blur\GaussianBlur.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\graphics\shader\blur</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\shader\ShaderManager.cpp">
+      <Filter>ソース ファイル\graphics\shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,8 +178,12 @@
     <ClInclude Include="object\depth_stencil\ShadowMap.h">
       <Filter>ソース ファイル\object\depth_stencil</Filter>
     </ClInclude>
-    <ClInclude Include="graphics\shader\ShaderManager.h" />
-    <ClInclude Include="graphics\shader\Blur\GaussianBlur.h" />
+    <ClInclude Include="graphics\shader\Blur\GaussianBlur.h">
+      <Filter>ソース ファイル\graphics\shader\blur</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\shader\ShaderManager.h">
+      <Filter>ソース ファイル\graphics\shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\BasicVertexShader.hlsl">
@@ -197,8 +210,12 @@
     <FxCompile Include="shader\SSAOSpritePixelShader.hlsl">
       <Filter>ソース ファイル\shader</Filter>
     </FxCompile>
-    <FxCompile Include="shader\blur\GaussianBlurVS.hlsl" />
-    <FxCompile Include="shader\blur\GaussianBlurPS.hlsl" />
+    <FxCompile Include="shader\blur\GaussianBlurPS.hlsl">
+      <Filter>ソース ファイル\shader\blur</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\blur\GaussianBlurVS.hlsl">
+      <Filter>ソース ファイル\shader\blur</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\header\DataSet.hlsli">
@@ -210,6 +227,8 @@
     <None Include="shader\header\ShadowDataSet.hlsli">
       <Filter>ソース ファイル\shader\header</Filter>
     </None>
-    <None Include="shader\blur\GaussianBlurDataSet.hlsli" />
+    <None Include="shader\blur\GaussianBlurDataSet.hlsli">
+      <Filter>ソース ファイル\shader\blur</Filter>
+    </None>
   </ItemGroup>
 </Project>

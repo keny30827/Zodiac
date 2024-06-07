@@ -19,23 +19,29 @@ public:
 	{
 		m_info.isEnableX = 1.0f;
 		m_info.isEnableY = 0.0f;
+		m_isReflesh = true;
 	}
 	void EnableGaussianY()
 	{
 		m_info.isEnableX = 0.0f;
 		m_info.isEnableY = 1.0f;
+		m_isReflesh = true;
 	}
 	void DisableGaussian()
 	{
 		m_info.isEnableX = 0.0f;
 		m_info.isEnableY = 0.0f;
+		m_isReflesh = true;
 	}
+
+	void SetInputTexture(IRenderTarget* pTex) { m_inputRT = pTex; }
 
 public:
 	ID3D12PipelineState* GetPipelineState() override { return m_pPipelineState; }
 	ID3D12RootSignature* GetRootSignature() override { return m_pRootSignature; }
 
 private:
+	// ガウシアンブラーを行うための事前準備情報.
 	ID3D12PipelineState* m_pPipelineState = nullptr;
 	ID3D12RootSignature* m_pRootSignature = nullptr;
 	ID3DBlob* m_pVertexShader = nullptr;
@@ -45,4 +51,9 @@ private:
 
 	// コンスタントバッファーで渡す中身.
 	SShaderGaussianInfo m_info = SShaderGaussianInfo();
+
+	// 入力画像.
+	IRenderTarget* m_inputRT = nullptr;
+
+	bool m_isReflesh = false;
 };

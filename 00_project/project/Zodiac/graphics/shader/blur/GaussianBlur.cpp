@@ -224,6 +224,23 @@ void CGaussianBlur::Init(CGraphicsController& graphicsController)
 		HRESULT ret = pDevice->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&m_pPipelineState));
 		VRETURN(ret == S_OK);
 	}
+
+	// ガウシアンブラー用のウェイトを計算しておく.
+	{
+		// ガウス関数（a * exp(-(x - b)^2 / 2c^2)）を使って釣鐘型のウェイトを作る.
+		// 合計で１にしたいので、最終的にトータルのウェイトで割るようにする.
+		// シェーダー側で使う際に、n = 0を中心として上下、もしくは左右に適用させるため、1~7に関しては2倍換算にする.
+		const float base = 0.0f;
+		const float smoothness = 3.0f;
+		float total = 0.0f;
+		for (int n = 0; n < _countof(m_info.weight); n++) {
+			m_info.weight[n] = expf(-powf(static_cast<float>(n) - base, 2.0f) / (2 * powf(smoothness, 2.0f)));
+			total += (n == 0) ? m_info.weight[n] : m_info.weight[n] * 2.0f;
+		}
+		for (int n = 0; n < _countof(m_info.weight); n++) {
+			m_info.weight[n] /= total;
+		}
+	}
 }
 
 void CGaussianBlur::Term()
@@ -242,6 +259,15 @@ void CGaussianBlur::Update()
 void CGaussianBlur::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper)
 {
 	// シェーダー情報の書き込み.
+	if (m_isReflesh) {
+		SShaderGaussianInfo* pBuffer = nullptr;
+		HRESULT ret = m_cbvResource->Map(0, nullptr, (void**)(&pBuffer));
+		if (ret == S_OK) {
+			(*pBuffer) = m_info;
+			m_cbvResource->Unmap(0, nullptr);
+		}
+		m_isReflesh = false;
+	}
 
 	// コマンドリストへの設定.
 }

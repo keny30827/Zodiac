@@ -44,13 +44,19 @@ private:
 	// ガウシアンブラーを行うための事前準備情報.
 	ID3D12PipelineState* m_pPipelineState = nullptr;
 	ID3D12RootSignature* m_pRootSignature = nullptr;
+	
 	ID3DBlob* m_pVertexShader = nullptr;
 	ID3DBlob* m_pPixelShader = nullptr;
+
 	ID3D12Resource* m_cbvResource = nullptr;
 	int m_cbvHeapPosition = -1;
 
+	ID3D12Resource* m_pShaderInfoResource = nullptr;
+	int m_shaderInfoHeapPosition = -1;
+
 	// コンスタントバッファーで渡す中身.
 	SShaderGaussianInfo m_info = SShaderGaussianInfo();
+	SShaderSpriteInfo m_sceneInfo = SShaderSpriteInfo();
 
 	// 入力画像.
 	IRenderTarget* m_inputRT = nullptr;

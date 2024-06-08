@@ -89,8 +89,7 @@ enum HEAP_CATEGORY {
 	HEAP_CATEGORY_GAUSSIAN_TABLE,
 	HEAP_CATEGORY_TEXTURE,
 
-	HEAP_CATEGORY_CBV,
-	HEAP_CATEGORY_SRV,
+	HEAP_CATEGORY_HUGE,
 
 	HEAP_CATEGORY_NUM,
 	HEAP_CATEGORY_INVALID = -1,
@@ -337,6 +336,12 @@ public:
 	virtual ID3D12PipelineState* GetSSAOPipelineState() = 0;
 	virtual void SetSSAORenderTarget(IRenderTarget* pRT) = 0;
 	virtual IRenderTarget* GetSSAORenderTarget() = 0;
+};
+
+class ISpriteNew {
+public:
+	virtual void Update() = 0;
+	virtual void Render(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
 };
 
 // カメラ用のインターフェース.

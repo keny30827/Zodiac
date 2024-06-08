@@ -62,8 +62,7 @@ private:
 			50,
 			100,
 
-			4096,
-			4096,
+			8196,
 		};
 		C_ASSERT(_countof(num) == HEAP_CATEGORY_NUM);
 		return num[e];

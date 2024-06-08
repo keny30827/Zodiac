@@ -10,49 +10,100 @@ void CGaussianBlur::Init(CGraphicsController& graphicsController)
 	{
 		HRESULT ret = S_FALSE;
 
-		// サイズ計算用の情報.
-		const int dataSize = util::AdjustRowPitch(static_cast<uint32_t>(sizeof(SShaderGaussianInfo)), 256);
-
-		// CPU側からアクセスできるアップロード用バッファを用意.
+		// ガウシアン情報.
 		{
-			D3D12_HEAP_PROPERTIES heapDesc = {};
-			heapDesc.Type = D3D12_HEAP_TYPE_UPLOAD;
-			heapDesc.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-			heapDesc.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+			// サイズ計算用の情報.
+			const int dataSize = util::AdjustRowPitch(static_cast<uint32_t>(sizeof(SShaderGaussianInfo)), 256);
 
-			D3D12_RESOURCE_DESC resourceDesc = {};
-			resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-			resourceDesc.Alignment = 0;
-			resourceDesc.Width = dataSize;
-			resourceDesc.Height = 1;
-			resourceDesc.DepthOrArraySize = 1;
-			resourceDesc.MipLevels = 1;
-			resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
-			resourceDesc.SampleDesc.Count = 1;
-			resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-			resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+			// CPU側からアクセスできるアップロード用バッファを用意.
+			{
+				D3D12_HEAP_PROPERTIES heapDesc = {};
+				heapDesc.Type = D3D12_HEAP_TYPE_UPLOAD;
+				heapDesc.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+				heapDesc.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
 
-			ret = pDevice->CreateCommittedResource(
-				&heapDesc,
-				D3D12_HEAP_FLAG_NONE,
-				&resourceDesc,
-				D3D12_RESOURCE_STATE_GENERIC_READ,
-				nullptr,
-				IID_PPV_ARGS(&m_cbvResource));
-			VRETURN(ret == S_OK);
+				D3D12_RESOURCE_DESC resourceDesc = {};
+				resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+				resourceDesc.Alignment = 0;
+				resourceDesc.Width = dataSize;
+				resourceDesc.Height = 1;
+				resourceDesc.DepthOrArraySize = 1;
+				resourceDesc.MipLevels = 1;
+				resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
+				resourceDesc.SampleDesc.Count = 1;
+				resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+				resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+				ret = pDevice->CreateCommittedResource(
+					&heapDesc,
+					D3D12_HEAP_FLAG_NONE,
+					&resourceDesc,
+					D3D12_RESOURCE_STATE_GENERIC_READ,
+					nullptr,
+					IID_PPV_ARGS(&m_cbvResource));
+				VRETURN(ret == S_OK);
+			}
+
+			// ヒープ位置を割り当てる.
+			m_cbvHeapPosition = graphicsController.AllocateHeapPosition(HEAP_CATEGORY_HUGE);
+			VRETURN(m_cbvHeapPosition >= 0);
+
+			// GPU側から見れるようにビューを用意.
+			{
+				D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+				D3D12_CPU_DESCRIPTOR_HANDLE handle = graphicsController.GetCPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_cbvHeapPosition);
+				cbvDesc.BufferLocation = m_cbvResource->GetGPUVirtualAddress();
+				cbvDesc.SizeInBytes = dataSize;
+				pDevice->CreateConstantBufferView(&cbvDesc, handle);
+			}
 		}
 
-		// ヒープ位置を割り当てる.
-		m_cbvHeapPosition = graphicsController.AllocateHeapPosition(HEAP_CATEGORY_CBV);
-		VRETURN(m_cbvHeapPosition >= 0);
-
-		// GPU側から見れるようにビューを用意.
+		// シーン情報.
 		{
-			D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-			D3D12_CPU_DESCRIPTOR_HANDLE handle = graphicsController.GetCPUDescriptorHandle(HEAP_CATEGORY_CBV, m_cbvHeapPosition);
-			cbvDesc.BufferLocation = m_cbvResource->GetGPUVirtualAddress();
-			cbvDesc.SizeInBytes = dataSize;
-			pDevice->CreateConstantBufferView(&cbvDesc, handle);
+			// サイズ計算用の情報.
+			const int dataSize = util::AdjustRowPitch(static_cast<uint32_t>(sizeof(SShaderSpriteInfo)), 256);
+
+			// CPU側からアクセスできるアップロード用バッファを用意.
+			{
+				D3D12_HEAP_PROPERTIES heapDesc = {};
+				heapDesc.Type = D3D12_HEAP_TYPE_UPLOAD;
+				heapDesc.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+				heapDesc.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+
+				D3D12_RESOURCE_DESC resourceDesc = {};
+				resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+				resourceDesc.Alignment = 0;
+				resourceDesc.Width = dataSize;
+				resourceDesc.Height = 1;
+				resourceDesc.DepthOrArraySize = 1;
+				resourceDesc.MipLevels = 1;
+				resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
+				resourceDesc.SampleDesc.Count = 1;
+				resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+				resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+				ret = pDevice->CreateCommittedResource(
+					&heapDesc,
+					D3D12_HEAP_FLAG_NONE,
+					&resourceDesc,
+					D3D12_RESOURCE_STATE_GENERIC_READ,
+					nullptr,
+					IID_PPV_ARGS(&m_pShaderInfoResource));
+				VRETURN(ret == S_OK);
+			}
+
+			// ヒープ位置を割り当てる.
+			m_shaderInfoHeapPosition = graphicsController.AllocateHeapPosition(HEAP_CATEGORY_HUGE);
+			VRETURN(m_shaderInfoHeapPosition >= 0);
+
+			// GPU側から見れるようにビューを用意.
+			{
+				D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+				D3D12_CPU_DESCRIPTOR_HANDLE handle = graphicsController.GetCPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_shaderInfoHeapPosition);
+				cbvDesc.BufferLocation = m_pShaderInfoResource->GetGPUVirtualAddress();
+				cbvDesc.SizeInBytes = dataSize;
+				pDevice->CreateConstantBufferView(&cbvDesc, handle);
+			}
 		}
 
 		// TODO 高速化のために最初からMapするようにしちゃう.
@@ -96,23 +147,29 @@ void CGaussianBlur::Init(CGraphicsController& graphicsController)
 	{
 		HRESULT ret = S_FALSE;
 
-		D3D12_DESCRIPTOR_RANGE descRange[2] = {};
+		D3D12_DESCRIPTOR_RANGE descRange[3] = {};
 		{
-			// 座標変換行列 + ガウシアン用情報.
+			// 座標変換行列.
 			descRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
 			descRange[0].BaseShaderRegister = 0;
-			descRange[0].NumDescriptors = 2;
+			descRange[0].NumDescriptors = 1;
 			descRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-			// レンダーターゲット設定されていた時に使う.
-			descRange[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-			descRange[1].BaseShaderRegister = 0;
-			descRange[1].NumDescriptors = 0;
+			// ガウシアン用情報.
+			descRange[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+			descRange[1].BaseShaderRegister = 1;
+			descRange[1].NumDescriptors = 1;
 			descRange[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+			// レンダーターゲット設定されていた時に使う.
+			descRange[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+			descRange[2].BaseShaderRegister = 0;
+			descRange[2].NumDescriptors = 1;
+			descRange[2].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 		}
 
 		// ルートパラメータ自体は、ヒープ分用意する.
-		D3D12_ROOT_PARAMETER rootParam[2] = {};
+		D3D12_ROOT_PARAMETER rootParam[3] = {};
 		{
 			rootParam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 			rootParam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -123,6 +180,11 @@ void CGaussianBlur::Init(CGraphicsController& graphicsController)
 			rootParam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 			rootParam[1].DescriptorTable.pDescriptorRanges = &descRange[1];
 			rootParam[1].DescriptorTable.NumDescriptorRanges = 1;
+
+			rootParam[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+			rootParam[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+			rootParam[2].DescriptorTable.pDescriptorRanges = &descRange[2];
+			rootParam[2].DescriptorTable.NumDescriptorRanges = 1;
 		}
 
 		D3D12_STATIC_SAMPLER_DESC samplerDesc[1] = {};
@@ -240,6 +302,29 @@ void CGaussianBlur::Init(CGraphicsController& graphicsController)
 		for (int n = 0; n < _countof(m_info.weight); n++) {
 			m_info.weight[n] /= total;
 		}
+
+		SShaderGaussianInfo* pBuffer = nullptr;
+		HRESULT ret = m_cbvResource->Map(0, nullptr, (void**)(&pBuffer));
+		if (ret == S_OK) {
+			(*pBuffer) = m_info;
+			m_cbvResource->Unmap(0, nullptr);
+		}
+	}
+
+	// シーン情報を作っておく.
+	// TODO 2D情報なので、グローバルに持っておけばいいかもしれない.
+	{
+		m_sceneInfo.toScreen.r[0].m128_f32[0] = 2.0f / graphicsController.GetWindowWidth();
+		m_sceneInfo.toScreen.r[1].m128_f32[1] = -2.0f / graphicsController.GetWindowHeight();
+		m_sceneInfo.toScreen.r[3].m128_f32[0] = -1.0f;
+		m_sceneInfo.toScreen.r[3].m128_f32[1] = 1.0f;
+
+		SShaderSpriteInfo* pBuffer = nullptr;
+		HRESULT ret = m_pShaderInfoResource->Map(0, nullptr, (void**)(&pBuffer));
+		if (ret == S_OK) {
+			(*pBuffer) = m_sceneInfo;
+			m_pShaderInfoResource->Unmap(0, nullptr);
+		}
 	}
 }
 
@@ -250,6 +335,7 @@ void CGaussianBlur::Term()
 	SAEF_RELEASE(m_pPixelShader);
 	SAEF_RELEASE(m_pVertexShader);
 	SAEF_RELEASE(m_cbvResource);
+	SAEF_RELEASE(m_pShaderInfoResource);
 }
 
 void CGaussianBlur::Update()
@@ -258,6 +344,9 @@ void CGaussianBlur::Update()
 
 void CGaussianBlur::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper)
 {
+	// 情報が足らない.
+	VRETURN(m_inputRT);
+
 	// シェーダー情報の書き込み.
 	if (m_isReflesh) {
 		SShaderGaussianInfo* pBuffer = nullptr;
@@ -270,4 +359,23 @@ void CGaussianBlur::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& h
 	}
 
 	// コマンドリストへの設定.
+	{
+		// パイプライン設定.
+		commandWrapper.SetPipelineState(GetPipelineState());
+		// ルートシグネチャ設定.
+		commandWrapper.SetGraphicsRootSignature(GetRootSignature());
+		// 必要なディスクリプタヒープを設定する.
+		// TODO コマンドリスト全体で単一ヒープならどこかで1回設定すればいい.ドロー単位で設定するなら、毎回設定する.ただ、ストールする可能性を忘れないこと.
+		ID3D12DescriptorHeap* ppLists[] = { heapWrapper.GetDescriptorHeap(HEAP_CATEGORY_HUGE) };
+		commandWrapper.SetDescriptorHeaps(ppLists, COUNTOF(ppLists));
+		// 今回の描画におけるルートパラメータとの紐づけ.
+		{
+			// シーン情報.
+			commandWrapper.SetGraphicsRootDescriptorTable(0, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_shaderInfoHeapPosition));
+			// ガウシアン情報.
+			commandWrapper.SetGraphicsRootDescriptorTable(1, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_cbvHeapPosition));
+			// 入力情報.
+			commandWrapper.SetGraphicsRootDescriptorTable(2, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputRT->GetSrvHeapPosition()));
+		}
+	}
 }

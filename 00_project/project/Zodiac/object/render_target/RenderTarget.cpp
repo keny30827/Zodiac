@@ -1,6 +1,7 @@
 #include "RenderTarget.h"
 #include "../../graphics/GraphicsController.h"
 
+// TODO レンダーターゲットがルートパラメータのインデックスを知っている必要がない（モデルやスプライトなどの単位で知っているべき）なのでいずれ消す.
 void CRenderTarget::Init(CGraphicsController& rGraphicsController, uint32_t width, uint32_t height, ACCESS_ROOT_PARAM rootParam)
 {
 	auto* pDevice = rGraphicsController.GetGraphicsDevice();
@@ -54,7 +55,7 @@ void CRenderTarget::Init(CGraphicsController& rGraphicsController, uint32_t widt
 	// SRV作成.
 	{
 		// ヒープに割り当てる.
-		m_srvHeapCategory = HEAP_CATEGORY::HEAP_CATEGORY_RENDER_TARGET_SHADER_VIEW;
+		m_srvHeapCategory = HEAP_CATEGORY::HEAP_CATEGORY_HUGE;
 		m_srvHeapPosition = rGraphicsController.AllocateHeapPosition(m_srvHeapCategory);
 		VRETURN(m_srvHeapPosition >= 0);
 		// ビュー.

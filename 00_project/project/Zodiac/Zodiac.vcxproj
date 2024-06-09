@@ -152,6 +152,7 @@
     <ClCompile Include="graphics\GraphicsResourceManager.cpp" />
     <ClCompile Include="graphics\pass\RenderPassSprite.cpp" />
     <ClCompile Include="graphics\pass\RenderPassTest.cpp" />
+    <ClCompile Include="graphics\shader\bloom\Bloom.cpp" />
     <ClCompile Include="graphics\shader\Blur\GaussianBlur.cpp" />
     <ClCompile Include="graphics\shader\ShaderManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="graphics\GraphicsResourceManager.h" />
     <ClInclude Include="graphics\pass\RenderPassSprite.h" />
     <ClInclude Include="graphics\pass\RenderPassTest.h" />
+    <ClInclude Include="graphics\shader\bloom\Bloom.h" />
     <ClInclude Include="graphics\shader\Blur\GaussianBlur.h" />
     <ClInclude Include="graphics\shader\ShaderManager.h" />
     <ClInclude Include="object\bone\Bone.h" />
@@ -226,6 +228,26 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="shader\bloom\BloomPS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="shader\bloom\BloomVS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="shader\blur\GaussianBlurPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -299,6 +321,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="shader\bloom\BloomDataSet.hlsli" />
     <None Include="shader\blur\GaussianBlurDataSet.hlsli" />
     <None Include="shader\header\DataSet.hlsli" />
     <None Include="shader\header\ShadowDataSet.hlsli" />

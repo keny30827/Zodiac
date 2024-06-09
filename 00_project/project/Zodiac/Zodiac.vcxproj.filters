@@ -66,6 +66,12 @@
     <Filter Include="ソース ファイル\graphics\shader\blur">
       <UniqueIdentifier>{3f098006-dcb3-4f6c-b4f8-fe0008c9711f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\graphics\shader\bloom">
+      <UniqueIdentifier>{7c341e64-de76-4167-84f3-0269f8730bfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\shader\bloom">
+      <UniqueIdentifier>{8c66a6f9-2079-437b-ae69-a02af3cc96f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -124,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="graphics\shader\ShaderManager.cpp">
       <Filter>ソース ファイル\graphics\shader</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\shader\bloom\Bloom.cpp">
+      <Filter>ソース ファイル\graphics\shader\bloom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +193,9 @@
     <ClInclude Include="graphics\shader\ShaderManager.h">
       <Filter>ソース ファイル\graphics\shader</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\shader\bloom\Bloom.h">
+      <Filter>ソース ファイル\graphics\shader\bloom</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\BasicVertexShader.hlsl">
@@ -216,6 +228,12 @@
     <FxCompile Include="shader\blur\GaussianBlurVS.hlsl">
       <Filter>ソース ファイル\shader\blur</Filter>
     </FxCompile>
+    <FxCompile Include="shader\bloom\BloomPS.hlsl">
+      <Filter>ソース ファイル\shader\bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\bloom\BloomVS.hlsl">
+      <Filter>ソース ファイル\shader\bloom</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\header\DataSet.hlsli">
@@ -229,6 +247,9 @@
     </None>
     <None Include="shader\blur\GaussianBlurDataSet.hlsli">
       <Filter>ソース ファイル\shader\blur</Filter>
+    </None>
+    <None Include="shader\bloom\BloomDataSet.hlsli">
+      <Filter>ソース ファイル\shader\bloom</Filter>
     </None>
   </ItemGroup>
 </Project>

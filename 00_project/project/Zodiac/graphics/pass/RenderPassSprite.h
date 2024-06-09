@@ -2,8 +2,9 @@
 
 #include "../../object/sprite/Sprite.h"
 
-class CScene;
 class CGraphicsController;
+class CScene;
+class CShaderManager;
 class CRenderPassSprite {
 public:
 	CRenderPassSprite() = default;
@@ -14,7 +15,7 @@ public:
 	void Term();
 
 public:
-	void Render(CScene& scene, CGraphicsController& graphicsController);
+	void Render(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr);
 
 private:
 	void RenderBloom(CScene& scene, CGraphicsController& graphicsController, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor);
@@ -35,4 +36,6 @@ private:
 	CSprite m_dof;
 	CSprite m_ssao;
 	CSprite m_ssaoForDisp;
+
+	CSpriteNew m_postEffectBuffer;
 };

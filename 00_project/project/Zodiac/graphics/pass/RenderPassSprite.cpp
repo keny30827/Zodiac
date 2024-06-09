@@ -1,6 +1,7 @@
 #include "RenderPassSprite.h"
 #include "../GraphicsResourceManager.h"
 #include "../GraphicsController.h"
+#include "../shader/ShaderManager.h"
 
 #define ENABLE_GAUSSIAN_HIGH_BRIGHT
 #define ENABLE_GAUSSIAN_DOF
@@ -29,14 +30,17 @@ bool CRenderPassSprite::Init(CGraphicsController& graphicsController)
 	m_dof.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
 	m_ssao.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
 	m_ssaoForDisp.Init(graphicsController, 300.0f, 0.0f, 150.0f, 150.0f);
+
+	m_postEffectBuffer.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
 	return true;
 }
 
 void CRenderPassSprite::Term()
 {
+	m_postEffectBuffer.Term();
 }
 
-void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsController)
+void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr)
 {
 	// UI用パス.
 	// バックバッファへの書き出し.
@@ -77,6 +81,40 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 #if defined(ENABLE_SSAO)
 	RenderSsao(scene, graphicsController, viewPort, scissor, scene.GetMainCamera());
 #endif
+
+	// TODO 新描画設計テスト中.
+	{
+		auto* pShader = shaderMgr.GetGaussianBlurShader();
+
+		{
+			auto& rt = scene.GetGaussian1RT();
+			if (graphicsController.BeginScene(&rt)) {
+				pShader->SetInputTexture(&scene.GetTestRT());
+				pShader->EnableGaussianX();
+				m_postEffectBuffer.SetShader(pShader);
+				m_postEffectBuffer.Render(
+					graphicsController.GetCommandWrapper(),
+					graphicsController.GetHeapWrapper(),
+					&viewPort,
+					&scissor);
+				graphicsController.EndScene(&rt);
+			}
+		}
+		{
+			auto& rt = scene.GetGaussian2RT();
+			if (graphicsController.BeginScene(&rt)) {
+				pShader->SetInputTexture(&scene.GetGaussian1RT());
+				pShader->EnableGaussianY();
+				m_postEffectBuffer.SetShader(pShader);
+				m_postEffectBuffer.Render(
+					graphicsController.GetCommandWrapper(),
+					graphicsController.GetHeapWrapper(),
+					&viewPort,
+					&scissor);
+				graphicsController.EndScene(&rt);
+			}
+		}
+	}
 
 	// バックバッファに書き込み.
 	if (graphicsController.BeginScene(true)) {
@@ -133,9 +171,16 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 			pSprite->SetSSAORenderTarget(&scene.GetSsao());
 			// pSprite->SetRenderTarget(&scene.GetDof());
 			// pSprite->SetDepthStencil(&scene.GetShadowMap());
-			pSprite->Render(graphicsController, &viewPort, &scissor);
+			//pSprite->Render(graphicsController, &viewPort, &scissor);
 		}
 #endif
+
+		// TODO 新描画設計テスト中.
+		ISprite* pSprite = const_cast<ISprite*>(scene.GetFrameBuffer());
+		pSprite->SetRenderTarget(&scene.GetGaussian2RT());
+		pSprite->EnableSsao(false);
+		pSprite->Render(graphicsController, &viewPort, &scissor);
+
 		graphicsController.EndScene();
 	}
 }

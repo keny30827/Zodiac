@@ -17,6 +17,9 @@ bool CApplication::Init(SApplicationOption option)
 	if (!m_scene.Init(m_graphicsController, option.w, option.h)) {
 		return false;
 	}
+	if (!m_shaderMgr.Init(m_graphicsController)) {
+		return false;
+	}
 	if (!m_renderPassTest.Init()) {
 		return false;
 	}
@@ -74,6 +77,7 @@ void CApplication::Term()
 {
 	m_renderPassSprite.Term();
 	m_renderPassTest.Term();
+	m_shaderMgr.Term();
 	m_scene.Term();
 	m_graphicsController.Term();
 	TermWindow();
@@ -132,7 +136,7 @@ void CApplication::UpdateGame()
 	// •`‰æ.
 	{
 		m_renderPassTest.Render(m_scene, m_graphicsController);
-		m_renderPassSprite.Render(m_scene, m_graphicsController);
+		m_renderPassSprite.Render(m_scene, m_graphicsController, m_shaderMgr);
 	}
 
 	// “o˜^•ª‚Í”jŠü‚·‚é.

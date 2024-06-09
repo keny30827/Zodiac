@@ -4,6 +4,7 @@
 
 #include "../graphics/GraphicsController.h"
 #include "../graphics/GraphicsResourceManager.h"
+#include "../graphics/shader/ShaderManager.h"
 
 #include "../graphics/pass/RenderPassTest.h"
 #include "../graphics/pass/RenderPassSprite.h"
@@ -52,6 +53,7 @@ private:
 	// グラフィックス用.
 	CGraphicsController m_graphicsController;
 	CScene m_scene;
+	CShaderManager m_shaderMgr;
 	// レンダーパス.
 	CRenderPassTest m_renderPassTest;
 	CRenderPassSprite m_renderPassSprite;

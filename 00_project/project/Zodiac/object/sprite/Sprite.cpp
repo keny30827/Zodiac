@@ -33,6 +33,9 @@ void CQuad::Init(CGraphicsController& rGraphicsController, float x, float y, flo
 
 	VRETURN(BuildVertexBuffer(rGraphicsController));
 	VRETURN(BuildIndexBuffer(rGraphicsController));
+
+	MapVertexData();
+	MapIndexData();
 }
 
 void CQuad::Term()

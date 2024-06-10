@@ -25,6 +25,7 @@ public:
 public:
 	void Init(CGraphicsController& rGraphicsController, float x, float y, float w, float h);
 	void Term();
+	void RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper);
 
 public:
 	ID3D12Resource* GetVertexBufferResource()
@@ -82,6 +83,7 @@ public:
 
 public:
 	void SetShader(IShader* pShader) { m_pShader = pShader; }
+	void SetDownSample(bool b) { m_isDownSample = b; };
 
 private:
 	DirectX::XMFLOAT2 m_pos = DirectX::XMFLOAT2();
@@ -89,6 +91,7 @@ private:
 
 	CQuad m_quad;
 	IShader* m_pShader = nullptr;
+	bool m_isDownSample = false;
 };
 
 class CSprite : public ISprite {

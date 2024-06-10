@@ -72,6 +72,12 @@
     <Filter Include="ソース ファイル\shader\bloom">
       <UniqueIdentifier>{8c66a6f9-2079-437b-ae69-a02af3cc96f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\shader\basic_sprite">
+      <UniqueIdentifier>{4b0d8d49-8acd-4dde-8d7f-b71f52e93934}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphics\shader\basic_sprite">
+      <UniqueIdentifier>{6b2e4a9f-28e9-43df-bbcb-4897e0170139}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -133,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="graphics\shader\bloom\Bloom.cpp">
       <Filter>ソース ファイル\graphics\shader\bloom</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\shader\basic_sprite\BasicSprite.cpp">
+      <Filter>ソース ファイル\graphics\shader\basic_sprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +205,9 @@
     <ClInclude Include="graphics\shader\bloom\Bloom.h">
       <Filter>ソース ファイル\graphics\shader\bloom</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\shader\basic_sprite\BasicSprite.h">
+      <Filter>ソース ファイル\graphics\shader\basic_sprite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\BasicVertexShader.hlsl">
@@ -234,6 +246,12 @@
     <FxCompile Include="shader\bloom\BloomVS.hlsl">
       <Filter>ソース ファイル\shader\bloom</Filter>
     </FxCompile>
+    <FxCompile Include="shader\basic_sprite\BasicSpritePS.hlsl">
+      <Filter>ソース ファイル\shader\basic_sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\basic_sprite\BasicSpriteVS.hlsl">
+      <Filter>ソース ファイル\shader\basic_sprite</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\header\DataSet.hlsli">
@@ -250,6 +268,9 @@
     </None>
     <None Include="shader\bloom\BloomDataSet.hlsli">
       <Filter>ソース ファイル\shader\bloom</Filter>
+    </None>
+    <None Include="shader\basic_sprite\BasicSpriteDataSet.hlsli">
+      <Filter>ソース ファイル\shader\basic_sprite</Filter>
     </None>
   </ItemGroup>
 </Project>

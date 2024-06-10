@@ -44,6 +44,17 @@ void CQuad::Term()
 	SAEF_RELEASE(m_pVertexBufferResource);
 }
 
+void CQuad::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper)
+{
+	// 処理するプリミティブタイプを設定.
+	commandWrapper.SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	// 頂点バッファビューを設定.
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferInfo = GetVertexBufferViewInfo();
+	D3D12_INDEX_BUFFER_VIEW indexBufferInfo = GetIndexBufferViewInfo();
+	commandWrapper.SetVertexBuffers(&vertexBufferInfo, 1);
+	commandWrapper.SetIndexBuffer(&indexBufferInfo);
+}
+
 bool CQuad::BuildVertexBuffer(CGraphicsController& graphicsController)
 {
 	VRETURN_RET(m_vertexList.size() > 0, false);
@@ -218,13 +229,7 @@ void CSpriteNew::Render(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapp
 
 	// メッシュ情報.
 	{
-		// 処理するプリミティブタイプを設定.
-		commandWrapper.SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		// 頂点バッファビューを設定.
-		D3D12_VERTEX_BUFFER_VIEW vertexBufferInfo = m_quad.GetVertexBufferViewInfo();
-		D3D12_INDEX_BUFFER_VIEW indexBufferInfo = m_quad.GetIndexBufferViewInfo();
-		commandWrapper.SetVertexBuffers(&vertexBufferInfo, 1);
-		commandWrapper.SetIndexBuffer(&indexBufferInfo);
+		m_quad.RenderSetup(commandWrapper, heapWrapper);
 	}
 
 	// シェーダー関連の情報は任せる.
@@ -233,7 +238,32 @@ void CSpriteNew::Render(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapp
 	}
 
 	// 描画.
-	commandWrapper.DrawIndexedInstanced(m_quad.GetIndexNum(), 1, 0, 0, 0);
+	if (m_isDownSample) {
+		VRETURN(pViewPort);
+		VRETURN(pScissor);
+		// ビューポートとシザリングを切り替えながら縮小バッファを作成する.
+		D3D12_VIEWPORT tmpViewPort = *pViewPort;
+		D3D12_RECT tmpScissor = *pScissor;
+		for (int n = 0; n < 8; n++) {
+			// サイズを半分に.
+			tmpViewPort.Width *= 0.5f;
+			tmpViewPort.Height *= 0.5f;
+			const int scissorOffsetY = (tmpScissor.bottom - tmpScissor.top) / 2;
+			tmpScissor.right = tmpScissor.left + ((tmpScissor.right - tmpScissor.left) / 2);
+			tmpScissor.bottom = tmpScissor.top + scissorOffsetY;
+			// そのサイズで描画.
+			commandWrapper.SetViewports(&tmpViewPort, 1);
+			commandWrapper.SetScissorRects(&tmpScissor, 1);
+			commandWrapper.DrawIndexedInstanced(m_quad.GetIndexNum(), 1, 0, 0, 0);
+			// 位置ずらす.
+			tmpViewPort.TopLeftY += tmpViewPort.Height;
+			tmpScissor.top += scissorOffsetY;
+			tmpScissor.bottom += scissorOffsetY;
+		}
+	}
+	else {
+		commandWrapper.DrawIndexedInstanced(m_quad.GetIndexNum(), 1, 0, 0, 0);
+	}
 }
 // ------------------------------------------------------.
 

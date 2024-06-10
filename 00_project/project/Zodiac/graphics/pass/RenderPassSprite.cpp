@@ -187,11 +187,18 @@ void CRenderPassSprite::RenderBloom(CScene& scene, CGraphicsController& graphics
 	}
 	// ぼかしの縮小バッファを作成.
 	{
+		auto* pShader = shaderMgr.GetBasicSpriteShader();
 		auto& rt = scene.GetHighBrightnessShrinkBuffer();
 		if (graphicsController.BeginScene(&rt)) {
-			m_highBrightShrinkBuffer.SetRenderTarget(&scene.GetGaussian2RT());
-			m_highBrightShrinkBuffer.DisableGaussian();
-			m_highBrightShrinkBuffer.RenderShrinkBuffer(graphicsController, &viewPort, &scissor);
+			pShader->SetInputBaseRT(&scene.GetGaussian2RT());
+			m_postEffectBuffer.SetShader(pShader);
+			m_postEffectBuffer.SetDownSample(true);
+			m_postEffectBuffer.Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
+			m_postEffectBuffer.SetDownSample(false);
 			graphicsController.EndScene(&rt);
 		}
 	}

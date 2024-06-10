@@ -18,7 +18,7 @@ public:
 	void Render(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr);
 
 private:
-	void RenderBloom(CScene& scene, CGraphicsController& graphicsController, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor);
+	void RenderBloom(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor);
 	void RenderDof(CScene& scene, CGraphicsController& graphicsController, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor);
 	void RenderSsao(CScene& scene, CGraphicsController& graphicsController, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor, const ICamera* pCamera);
 

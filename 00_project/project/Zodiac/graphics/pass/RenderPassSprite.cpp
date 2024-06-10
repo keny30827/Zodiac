@@ -71,7 +71,7 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 	}
 
 #if defined(ENABLE_GAUSSIAN_HIGH_BRIGHT)
-	RenderBloom(scene, graphicsController, viewPort, scissor);
+	RenderBloom(scene, graphicsController, shaderMgr, viewPort, scissor);
 #endif
 
 #if defined(ENABLE_GAUSSIAN_DOF)
@@ -81,40 +81,6 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 #if defined(ENABLE_SSAO)
 	RenderSsao(scene, graphicsController, viewPort, scissor, scene.GetMainCamera());
 #endif
-
-	// TODO 新描画設計テスト中.
-	{
-		auto* pShader = shaderMgr.GetGaussianBlurShader();
-
-		{
-			auto& rt = scene.GetGaussian1RT();
-			if (graphicsController.BeginScene(&rt)) {
-				pShader->SetInputTexture(&scene.GetTestRT());
-				pShader->EnableGaussianX();
-				m_postEffectBuffer.SetShader(pShader);
-				m_postEffectBuffer.Render(
-					graphicsController.GetCommandWrapper(),
-					graphicsController.GetHeapWrapper(),
-					&viewPort,
-					&scissor);
-				graphicsController.EndScene(&rt);
-			}
-		}
-		{
-			auto& rt = scene.GetGaussian2RT();
-			if (graphicsController.BeginScene(&rt)) {
-				pShader->SetInputTexture(&scene.GetGaussian1RT());
-				pShader->EnableGaussianY();
-				m_postEffectBuffer.SetShader(pShader);
-				m_postEffectBuffer.Render(
-					graphicsController.GetCommandWrapper(),
-					graphicsController.GetHeapWrapper(),
-					&viewPort,
-					&scissor);
-				graphicsController.EndScene(&rt);
-			}
-		}
-	}
 
 	// バックバッファに書き込み.
 	if (graphicsController.BeginScene(true)) {
@@ -177,7 +143,7 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 
 		// TODO 新描画設計テスト中.
 		ISprite* pSprite = const_cast<ISprite*>(scene.GetFrameBuffer());
-		pSprite->SetRenderTarget(&scene.GetGaussian2RT());
+		pSprite->SetRenderTarget(&scene.GetBloom());
 		pSprite->EnableSsao(false);
 		pSprite->Render(graphicsController, &viewPort, &scissor);
 
@@ -185,26 +151,38 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 	}
 }
 
-void CRenderPassSprite::RenderBloom(CScene& scene, CGraphicsController& graphicsController, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor)
+void CRenderPassSprite::RenderBloom(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor)
 {
 	// 大本の１枚目にガウシアンかける.
 	{
-		auto& rt = scene.GetGaussian1RT();
-		if (graphicsController.BeginScene(&rt)) {
-			m_gaussian1.SetRenderTarget(&scene.GetHighBrightness());
-			m_gaussian1.EnableGaussianX();
-			m_gaussian1.Render(graphicsController, &viewPort, &scissor);
-			graphicsController.EndScene(&rt);
+		auto* pShader = shaderMgr.GetGaussianBlurShader();
+		{
+			auto& rt = scene.GetGaussian1RT();
+			if (graphicsController.BeginScene(&rt)) {
+				pShader->SetInputTexture(&scene.GetHighBrightness());
+				pShader->EnableGaussianX();
+				m_postEffectBuffer.SetShader(pShader);
+				m_postEffectBuffer.Render(
+					graphicsController.GetCommandWrapper(),
+					graphicsController.GetHeapWrapper(),
+					&viewPort,
+					&scissor);
+				graphicsController.EndScene(&rt);
+			}
 		}
-	}
-	{
-		auto& rt = scene.GetGaussian2RT();
-		if (graphicsController.BeginScene(&rt)) {
-			m_gaussian2.SetRenderTarget(&scene.GetGaussian1RT());
-			m_gaussian2.DisableGaussian();
-			m_gaussian2.EnableGaussianY();
-			m_gaussian2.Render(graphicsController, &viewPort, &scissor);
-			graphicsController.EndScene(&rt);
+		{
+			auto& rt = scene.GetGaussian2RT();
+			if (graphicsController.BeginScene(&rt)) {
+				pShader->SetInputTexture(&scene.GetGaussian1RT());
+				pShader->EnableGaussianY();
+				m_postEffectBuffer.SetShader(pShader);
+				m_postEffectBuffer.Render(
+					graphicsController.GetCommandWrapper(),
+					graphicsController.GetHeapWrapper(),
+					&viewPort,
+					&scissor);
+				graphicsController.EndScene(&rt);
+			}
 		}
 	}
 	// ぼかしの縮小バッファを作成.
@@ -219,13 +197,21 @@ void CRenderPassSprite::RenderBloom(CScene& scene, CGraphicsController& graphics
 	}
 	// 作成したぼかし２枚を使って、ブルームをかけたスプライトを作成.
 	{
-		auto& rt = scene.GetBloom();
-		if (graphicsController.BeginScene(&rt)) {
-			m_bloom.SetRenderTarget(&scene.GetTestRT());
-			m_bloom.SetBloomRenderTarget(&scene.GetGaussian2RT());
-			m_bloom.SetBloomShrinkRenderTarget(&scene.GetHighBrightnessShrinkBuffer());
-			m_bloom.RenderBloom(graphicsController, &viewPort, &scissor);
-			graphicsController.EndScene(&rt);
+		auto* pShader = shaderMgr.GetBloomShader();
+		{
+			auto& rt = scene.GetBloom();
+			if (graphicsController.BeginScene(&rt)) {
+				pShader->SetInputBaseRT(&scene.GetTestRT());
+				pShader->SetInputBloomMipTopRT(&scene.GetGaussian2RT());
+				pShader->SetInputBloomMipOtherRT(&scene.GetHighBrightnessShrinkBuffer());
+				m_postEffectBuffer.SetShader(pShader);
+				m_postEffectBuffer.Render(
+					graphicsController.GetCommandWrapper(),
+					graphicsController.GetHeapWrapper(),
+					&viewPort,
+					&scissor);
+				graphicsController.EndScene(&rt);
+			}
 		}
 	}
 }

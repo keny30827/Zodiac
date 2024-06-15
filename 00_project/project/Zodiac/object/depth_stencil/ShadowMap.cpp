@@ -55,7 +55,7 @@ void CShadowMap::Init(CGraphicsController& rGraphicsController, uint32_t width, 
 	// SRV作成.
 	{
 		// ヒープに割り当てる.
-		m_srvHeapCategory = HEAP_CATEGORY::HEAP_CATEGORY_DEPTH_STENCIL_SHADER_VIEW;
+		m_srvHeapCategory = HEAP_CATEGORY::HEAP_CATEGORY_HUGE;
 		m_srvHeapPosition = rGraphicsController.AllocateHeapPosition(m_srvHeapCategory);
 		VRETURN(m_srvHeapPosition >= 0);
 		// ビュー.

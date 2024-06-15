@@ -22,7 +22,7 @@ public:
 	void SetInputBaseRT(IRenderTarget* pTex) { m_inputBaseRT = pTex; }
 	void SetInputBlurMipTopRT(IRenderTarget* pTex) { m_inputBlurMipTopRT = pTex; }
 	void SetInputBlurMipOtherRT(IRenderTarget* pTex) { m_inputBlurMipOtherRT = pTex; }
-	void SetInputDepthRT(IRenderTarget* pTex) { m_inputDepthRT = pTex; }
+	void SetInputDepthRT(IDepthStencil* pTex) { m_inputDepthRT = pTex; }
 
 public:
 	ID3D12PipelineState* GetPipelineState() override { return m_pPipelineState; }
@@ -46,5 +46,5 @@ private:
 	IRenderTarget* m_inputBaseRT = nullptr;
 	IRenderTarget* m_inputBlurMipTopRT = nullptr;
 	IRenderTarget* m_inputBlurMipOtherRT = nullptr;
-	IRenderTarget* m_inputDepthRT = nullptr;
+	IDepthStencil* m_inputDepthRT = nullptr;
 };

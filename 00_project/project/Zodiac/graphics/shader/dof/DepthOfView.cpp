@@ -320,7 +320,7 @@ void CDepthOfView::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& he
 			// ブラーのミップ残り.
 			commandWrapper.SetGraphicsRootDescriptorTable(3, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputBlurMipOtherRT->GetSrvHeapPosition()));
 			// 深度.
-			commandWrapper.SetGraphicsRootDescriptorTable(3, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputDepthRT->GetSrvHeapPosition()));
+			commandWrapper.SetGraphicsRootDescriptorTable(4, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputDepthRT->GetSrvHeapPosition()));
 		}
 	}
 }

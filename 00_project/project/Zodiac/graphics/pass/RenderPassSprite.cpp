@@ -75,7 +75,7 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 #endif
 
 #if defined(ENABLE_GAUSSIAN_DOF)
-	RenderDof(scene, graphicsController, viewPort, scissor);
+	RenderDof(scene, graphicsController, shaderMgr, viewPort, scissor);
 #endif
 
 #if defined(ENABLE_SSAO)
@@ -143,7 +143,7 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 
 		// TODO 新描画設計テスト中.
 		ISprite* pSprite = const_cast<ISprite*>(scene.GetFrameBuffer());
-		pSprite->SetRenderTarget(&scene.GetBloom());
+		pSprite->SetRenderTarget(&scene.GetDof());
 		pSprite->EnableSsao(false);
 		pSprite->Render(graphicsController, &viewPort, &scissor);
 
@@ -223,49 +223,75 @@ void CRenderPassSprite::RenderBloom(CScene& scene, CGraphicsController& graphics
 	}
 }
 
-void CRenderPassSprite::RenderDof(CScene& scene, CGraphicsController& graphicsController, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor)
+void CRenderPassSprite::RenderDof(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor)
 {
-	// DOF用のぼかし１枚目.
+	// 大本の１枚目にガウシアンかける.
 	{
-		auto& rt = scene.GetGaussian1RT();
-		if (graphicsController.BeginScene(&rt)) {
-			m_gaussian1.SetRenderTarget(&scene.GetTestRT());
-			m_gaussian1.EnableGaussianX();
-			m_gaussian1.Render(graphicsController, &viewPort, &scissor);
-			graphicsController.EndScene(&rt);
+		auto* pShader = shaderMgr.GetGaussianBlurShader();
+		{
+			auto& rt = scene.GetGaussian1RT();
+			if (graphicsController.BeginScene(&rt)) {
+				pShader->SetInputTexture(&scene.GetTestRT());
+				pShader->EnableGaussianX();
+				m_postEffectBuffer.SetShader(pShader);
+				m_postEffectBuffer.Render(
+					graphicsController.GetCommandWrapper(),
+					graphicsController.GetHeapWrapper(),
+					&viewPort,
+					&scissor);
+				graphicsController.EndScene(&rt);
+			}
 		}
-	}
-	{
-		auto& rt = scene.GetGaussian2RT();
-		if (graphicsController.BeginScene(&rt)) {
-			m_gaussian2.SetRenderTarget(&scene.GetGaussian1RT());
-			m_gaussian2.DisableGaussian();
-			m_gaussian2.EnableGaussianY();
-			m_gaussian2.Render(graphicsController, &viewPort, &scissor);
-			graphicsController.EndScene(&rt);
+		{
+			auto& rt = scene.GetGaussian2RT();
+			if (graphicsController.BeginScene(&rt)) {
+				pShader->SetInputTexture(&scene.GetGaussian1RT());
+				pShader->EnableGaussianY();
+				m_postEffectBuffer.SetShader(pShader);
+				m_postEffectBuffer.Render(
+					graphicsController.GetCommandWrapper(),
+					graphicsController.GetHeapWrapper(),
+					&viewPort,
+					&scissor);
+				graphicsController.EndScene(&rt);
+			}
 		}
 	}
 	// ぼかしの縮小バッファを作成.
 	{
+		auto* pShader = shaderMgr.GetBasicSpriteShader();
 		auto& rt = scene.GetDofShrinkBuffer();
 		if (graphicsController.BeginScene(&rt)) {
-			m_dofShrinkBuffer.SetRenderTarget(&scene.GetGaussian2RT());
-			m_dofShrinkBuffer.DisableGaussian();
-			m_dofShrinkBuffer.RenderShrinkBuffer(graphicsController, &viewPort, &scissor);
+			pShader->SetInputBaseRT(&scene.GetGaussian2RT());
+			m_postEffectBuffer.SetShader(pShader);
+			m_postEffectBuffer.SetDownSample(true);
+			m_postEffectBuffer.Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
+			m_postEffectBuffer.SetDownSample(false);
 			graphicsController.EndScene(&rt);
 		}
 	}
 	// 作成したぼかし２枚を使って、ブルームをかけたスプライトを作成.
 	{
-		auto& rt = scene.GetDof();
-		if (graphicsController.BeginScene(&rt)) {
-			m_dof.EnableDof();
-			m_dof.SetDepthStencil(&scene.GetDofDepth());
-			m_dof.SetRenderTarget(&scene.GetTestRT());
-			m_dof.SetDofRenderTarget(&scene.GetGaussian2RT());
-			m_dof.SetDofShrinkRenderTarget(&scene.GetDofShrinkBuffer());
-			m_dof.Render(graphicsController, &viewPort, &scissor);
-			graphicsController.EndScene(&rt);
+		auto* pShader = shaderMgr.GetDepthOfViewShader();
+		{
+			auto& rt = scene.GetDof();
+			if (graphicsController.BeginScene(&rt)) {
+				pShader->SetInputBaseRT(&scene.GetTestRT());
+				pShader->SetInputBlurMipTopRT(&scene.GetGaussian2RT());
+				pShader->SetInputBlurMipOtherRT(&scene.GetDofShrinkBuffer());
+				pShader->SetInputDepthRT(&scene.GetDofDepth());
+				m_postEffectBuffer.SetShader(pShader);
+				m_postEffectBuffer.Render(
+					graphicsController.GetCommandWrapper(),
+					graphicsController.GetHeapWrapper(),
+					&viewPort,
+					&scissor);
+				graphicsController.EndScene(&rt);
+			}
 		}
 	}
 }

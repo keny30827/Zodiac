@@ -78,6 +78,12 @@
     <Filter Include="ソース ファイル\graphics\shader\basic_sprite">
       <UniqueIdentifier>{6b2e4a9f-28e9-43df-bbcb-4897e0170139}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\graphics\shader\dof">
+      <UniqueIdentifier>{67c8878f-ce64-44b4-bdb0-9261f569bc16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\shader\dof">
+      <UniqueIdentifier>{e998b0e5-eca9-4007-a8fd-12fb1ec77f5a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -142,6 +148,9 @@
     </ClCompile>
     <ClCompile Include="graphics\shader\basic_sprite\BasicSprite.cpp">
       <Filter>ソース ファイル\graphics\shader\basic_sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\shader\dof\DepthOfView.cpp">
+      <Filter>ソース ファイル\graphics\shader\dof</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +217,9 @@
     <ClInclude Include="graphics\shader\basic_sprite\BasicSprite.h">
       <Filter>ソース ファイル\graphics\shader\basic_sprite</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\shader\dof\DepthOfView.h">
+      <Filter>ソース ファイル\graphics\shader\dof</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\BasicVertexShader.hlsl">
@@ -252,6 +264,12 @@
     <FxCompile Include="shader\basic_sprite\BasicSpriteVS.hlsl">
       <Filter>ソース ファイル\shader\basic_sprite</Filter>
     </FxCompile>
+    <FxCompile Include="shader\dof\DepthOfViewPS.hlsl">
+      <Filter>ソース ファイル\shader\dof</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\dof\DepthOfViewVS.hlsl">
+      <Filter>ソース ファイル\shader\dof</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\header\DataSet.hlsli">
@@ -271,6 +289,9 @@
     </None>
     <None Include="shader\basic_sprite\BasicSpriteDataSet.hlsli">
       <Filter>ソース ファイル\shader\basic_sprite</Filter>
+    </None>
+    <None Include="shader\dof\DepthOfViewDataSet.hlsli">
+      <Filter>ソース ファイル\shader\dof</Filter>
     </None>
   </ItemGroup>
 </Project>

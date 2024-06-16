@@ -6,6 +6,7 @@
 #include "bloom/Bloom.h"
 #include "basic_sprite/BasicSprite.h"
 #include "dof/DepthOfView.h"
+#include "ssao/SSAO.h"
 
 class CGraphicsController;
 class CShaderManager {
@@ -22,10 +23,12 @@ public:
 	CBloom* GetBloomShader() { return &m_bloom; }
 	CBasicSprite* GetBasicSpriteShader() { return &m_basicSprite; }
 	CDepthOfView* GetDepthOfViewShader() { return &m_dof; }
+	CSSAO* GetSSAOShader() { return &m_ssao; }
 
 private:
 	CGaussianBlur m_gaussianBlur;
 	CBloom m_bloom;
 	CBasicSprite m_basicSprite;
 	CDepthOfView m_dof;
+	CSSAO m_ssao;
 };

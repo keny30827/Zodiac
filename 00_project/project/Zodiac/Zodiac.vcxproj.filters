@@ -84,6 +84,12 @@
     <Filter Include="ソース ファイル\shader\dof">
       <UniqueIdentifier>{e998b0e5-eca9-4007-a8fd-12fb1ec77f5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\shader\ssao">
+      <UniqueIdentifier>{67ee777e-a826-487b-bbb2-83c5f6b451dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphics\shader\ssao">
+      <UniqueIdentifier>{f0d32467-7f08-459a-b4a8-79e147636bab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -151,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="graphics\shader\dof\DepthOfView.cpp">
       <Filter>ソース ファイル\graphics\shader\dof</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\shader\ssao\SSAO.cpp">
+      <Filter>ソース ファイル\graphics\shader\ssao</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +229,9 @@
     <ClInclude Include="graphics\shader\dof\DepthOfView.h">
       <Filter>ソース ファイル\graphics\shader\dof</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\shader\ssao\SSAO.h">
+      <Filter>ソース ファイル\graphics\shader\ssao</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\BasicVertexShader.hlsl">
@@ -270,6 +282,12 @@
     <FxCompile Include="shader\dof\DepthOfViewVS.hlsl">
       <Filter>ソース ファイル\shader\dof</Filter>
     </FxCompile>
+    <FxCompile Include="shader\ssao\SSAOPS.hlsl">
+      <Filter>ソース ファイル\shader\ssao</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\ssao\SSAOVS.hlsl">
+      <Filter>ソース ファイル\shader\ssao</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\header\DataSet.hlsli">
@@ -292,6 +310,9 @@
     </None>
     <None Include="shader\dof\DepthOfViewDataSet.hlsli">
       <Filter>ソース ファイル\shader\dof</Filter>
+    </None>
+    <None Include="shader\ssao\SSAODataSet.hlsli">
+      <Filter>ソース ファイル\shader\ssao</Filter>
     </None>
   </ItemGroup>
 </Project>

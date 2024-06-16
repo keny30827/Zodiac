@@ -79,7 +79,7 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 #endif
 
 #if defined(ENABLE_SSAO)
-	RenderSsao(scene, graphicsController, viewPort, scissor, scene.GetMainCamera());
+	RenderSsao(scene, graphicsController, shaderMgr, viewPort, scissor, scene.GetMainCamera());
 #endif
 
 	// バックバッファに書き込み.
@@ -296,14 +296,20 @@ void CRenderPassSprite::RenderDof(CScene& scene, CGraphicsController& graphicsCo
 	}
 }
 
-void CRenderPassSprite::RenderSsao(CScene& scene, CGraphicsController& graphicsController, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor, const ICamera* pCamera)
+void CRenderPassSprite::RenderSsao(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor, const ICamera* pCamera)
 {
 	{
+		auto* pShader = shaderMgr.GetSSAOShader();
 		auto& rt = scene.GetSsao();
 		if (graphicsController.BeginScene(&rt)) {
-			m_ssao.SetDepthStencil(&scene.GetDofDepth());
-			m_ssao.SetNormalRenderTarget(&scene.GetNormal());
-			m_ssao.RenderSSAO(graphicsController, *pCamera, &viewPort, &scissor);
+			pShader->SetInputDepthRT(&scene.GetDofDepth());
+			pShader->SetInputNormalRT(&scene.GetNormal());
+			m_postEffectBuffer.SetShader(pShader);
+			m_postEffectBuffer.Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
 			graphicsController.EndScene(&rt);
 		}
 	}

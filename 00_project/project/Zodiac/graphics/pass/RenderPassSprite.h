@@ -20,7 +20,7 @@ public:
 private:
 	void RenderBloom(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor);
 	void RenderDof(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor);
-	void RenderSsao(CScene& scene, CGraphicsController& graphicsController, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor, const ICamera* pCamera);
+	void RenderSsao(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor, const ICamera* pCamera);
 
 private:
 	CSprite m_gaussian1;

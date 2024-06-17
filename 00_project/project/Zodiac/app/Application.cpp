@@ -120,9 +120,6 @@ void CApplication::UpdateGame()
 		// ƒJƒƒ‰‚ğ‡‚í‚¹‚é‚Ì‚Í‰º–Ú.
 		focusPos.y += 10.f;
 		m_camera.Update(&focusPos);
-
-		m_sprite.SetRenderTarget(&m_scene.GetTestRT());
-		m_sprite.Update();
 	}
 
 	// •`‰æ“o˜^.

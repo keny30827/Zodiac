@@ -243,19 +243,10 @@
     <FxCompile Include="shader\SpritePixelShader.hlsl">
       <Filter>ソース ファイル\shader</Filter>
     </FxCompile>
-    <FxCompile Include="shader\SpriteVertexShader.hlsl">
-      <Filter>ソース ファイル\shader</Filter>
-    </FxCompile>
     <FxCompile Include="shader\ShadowVertexShader.hlsl">
       <Filter>ソース ファイル\shader</Filter>
     </FxCompile>
     <FxCompile Include="shader\DeferredSpritePixelShader.hlsl">
-      <Filter>ソース ファイル\shader</Filter>
-    </FxCompile>
-    <FxCompile Include="shader\BloomSpritePixelShader.hlsl">
-      <Filter>ソース ファイル\shader</Filter>
-    </FxCompile>
-    <FxCompile Include="shader\SSAOSpritePixelShader.hlsl">
       <Filter>ソース ファイル\shader</Filter>
     </FxCompile>
     <FxCompile Include="shader\blur\GaussianBlurPS.hlsl">

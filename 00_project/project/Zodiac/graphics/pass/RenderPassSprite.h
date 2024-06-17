@@ -23,19 +23,14 @@ private:
 	void RenderSsao(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor, const ICamera* pCamera);
 
 private:
-	CSprite m_gaussian1;
-	CSprite m_gaussian2;
+	// 表示デバッグ用のスプライト.
+	CSprite m_gaussian;
 	CSprite m_colorSprite;
 	CSprite m_normalSprite;
 	CSprite m_highBright;
-	CSprite m_highBrightShrinkBuffer;
-	CSprite m_highBrightShrinkBufferForDisp;
 	CSprite m_bloom;
-	CSprite m_dofShrinkBuffer;
-	CSprite m_dofShrinkBufferForDisp;
 	CSprite m_dof;
 	CSprite m_ssao;
-	CSprite m_ssaoForDisp;
 
-	CSpriteNew m_postEffectBuffer;
+	CSprite m_postEffectBuffer;
 };

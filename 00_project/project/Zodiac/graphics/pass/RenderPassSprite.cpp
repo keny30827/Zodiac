@@ -15,21 +15,13 @@ bool CRenderPassSprite::Init(CGraphicsController& graphicsController)
 	HRESULT ret = pSwapChain->GetDesc1(&scDesc);
 	VRETURN_RET(ret == S_OK, false);
 
-	m_gaussian1.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
-	m_gaussian2.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
+	m_gaussian.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
 	m_colorSprite.Init(graphicsController, 0.0f, 0.0f, 150.0f, 150.0f);
 	m_normalSprite.Init(graphicsController, 0.0f, 150.0f, 150.0f, 150.0f);
 	m_highBright.Init(graphicsController, 0.0f, 300.0f, 150.0f, 150.0f);
-	m_highBrightShrinkBufferForDisp.Init(graphicsController, 0.0f, 450.0f, 150.0f, 150.0f);
-	// 縮小バッファに書き込む用.ウィンドウサイズ分で作成して、ビューポートでサイズを調整して描画する.
-	m_highBrightShrinkBuffer.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
-	m_bloom.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
-	m_dofShrinkBufferForDisp.Init(graphicsController, 150.0f, 0.0f, 150.0f, 150.0f);
-	// 縮小バッファに書き込む用.ウィンドウサイズ分で作成して、ビューポートでサイズを調整して描画する.
-	m_dofShrinkBuffer.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
-	m_dof.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
-	m_ssao.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
-	m_ssaoForDisp.Init(graphicsController, 300.0f, 0.0f, 150.0f, 150.0f);
+	m_bloom.Init(graphicsController, 0.0f, 450.0f, 150.0f, 150.0f);
+	m_dof.Init(graphicsController, 150.0f, 0.0f, 150.0f, 150.0f);
+	m_ssao.Init(graphicsController, 300.0f, 0.0f, 150.0f, 150.0f);
 
 	m_postEffectBuffer.Init(graphicsController, 0.0f, 0.0f, static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
 	return true;
@@ -84,6 +76,7 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 
 	// バックバッファに書き込み.
 	if (graphicsController.BeginScene(true)) {
+		auto* pShader = shaderMgr.GetBasicSpriteShader();
 #if defined(ENABLE_GBUFFER_TEST)
 		{
 			ISprite* pSprite = const_cast<ISprite*>(scene.GetFrameBuffer());
@@ -93,59 +86,75 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 		}
 #else
 		{
-			ISprite* pSprite = &m_colorSprite;
-			pSprite->SetRenderTarget(&scene.GetColor());
-			pSprite->Render(graphicsController, &viewPort, &scissor);
+			pShader->SetInputBaseRT(&scene.GetColor());
+			m_colorSprite.SetShader(pShader);
+			m_colorSprite.Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
 		}
 		{
-			ISprite* pSprite = &m_normalSprite;
-			scene.GetNormal().SetAccessRootParam(ACCESS_ROOT_PARAM_RENDER_TARGET_SHADER_VIEW);
-			pSprite->SetRenderTarget(&scene.GetNormal());
-			pSprite->Render(graphicsController, &viewPort, &scissor);
-			scene.GetNormal().SetAccessRootParam(ACCESS_ROOT_PARAM_G_BUF_NORMAL);
+			pShader->SetInputBaseRT(&scene.GetNormal());
+			m_normalSprite.SetShader(pShader);
+			m_normalSprite.Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
 		}
 #if defined(ENABLE_GAUSSIAN_HIGH_BRIGHT)
 		{
-			ISprite* pSprite = &m_highBright;
-			pSprite->SetRenderTarget(&scene.GetGaussian2RT());
-			pSprite->Render(graphicsController, &viewPort, &scissor);
-		}
-		{
-			ISprite* pSprite = &m_highBrightShrinkBufferForDisp;
-			pSprite->SetRenderTarget(&scene.GetHighBrightnessShrinkBuffer());
-			pSprite->Render(graphicsController, &viewPort, &scissor);
+			pShader->SetInputBaseRT(&scene.GetHighBrightnessShrinkBuffer());
+			m_highBright.SetShader(pShader);
+			m_highBright.Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
 		}
 #endif
 #if defined(ENABLE_GAUSSIAN_DOF)
 		{
-			ISprite* pSprite = &m_dofShrinkBufferForDisp;
-			pSprite->SetRenderTarget(&scene.GetDofShrinkBuffer());
-			pSprite->Render(graphicsController, &viewPort, &scissor);
+			pShader->SetInputBaseRT(&scene.GetDofShrinkBuffer());
+			m_dof.SetShader(pShader);
+			m_dof.Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
 		}
 #endif
 #if defined(ENABLE_SSAO)
 		{
-			ISprite* pSprite = &m_ssaoForDisp;
-			pSprite->SetRenderTarget(&scene.GetSsao());
-			pSprite->Render(graphicsController, &viewPort, &scissor);
+			pShader->SetInputBaseRT(&scene.GetSsao());
+			m_ssao.SetShader(pShader);
+			m_ssao.Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
 		}
 #endif
 		{
-			ISprite* pSprite = const_cast<ISprite*>(scene.GetFrameBuffer());
-			pSprite->SetRenderTarget(&scene.GetTestRT());
-			pSprite->EnableSsao(true);
-			pSprite->SetSSAORenderTarget(&scene.GetSsao());
-			// pSprite->SetRenderTarget(&scene.GetDof());
-			// pSprite->SetDepthStencil(&scene.GetShadowMap());
-			//pSprite->Render(graphicsController, &viewPort, &scissor);
+			pShader->SetInputBaseRT(&scene.GetTestRT());
+			m_ssao.SetShader(pShader);
+			m_ssao.Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
 		}
 #endif
 
 		// TODO 新描画設計テスト中.
+		// ここで、ディファードでSSAO込みの絵を書く.
+#if 0
 		ISprite* pSprite = const_cast<ISprite*>(scene.GetFrameBuffer());
 		pSprite->SetRenderTarget(&scene.GetDof());
 		pSprite->EnableSsao(false);
 		pSprite->Render(graphicsController, &viewPort, &scissor);
+#endif
 
 		graphicsController.EndScene();
 	}

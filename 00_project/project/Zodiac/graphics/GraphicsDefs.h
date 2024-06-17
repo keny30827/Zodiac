@@ -266,79 +266,8 @@ public:
 };
 
 // スプライト用のインターフェース.
-// TODO なぜスプライトがDOFだのSSAOだのの区別を持っているのか….
 class CGraphicsController;
 class ISprite {
-public:
-	virtual void Render(CGraphicsController& graphicsController, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
-	virtual void RenderShrinkBuffer(CGraphicsController& graphicsController, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
-	virtual void RenderBloom(CGraphicsController& graphicsController, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
-	virtual void RenderSSAO(CGraphicsController& graphicsController, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
-
-public:
-	virtual ID3D12Resource* GetVertexBufferResource() = 0;
-	virtual const D3D12_VERTEX_BUFFER_VIEW GetVertexBufferViewInfo() const = 0;
-
-	virtual ID3D12Resource* GetIndexBufferResource() = 0;
-	virtual const D3D12_INDEX_BUFFER_VIEW GetIndexBufferViewInfo() const = 0;
-
-	virtual ID3D12Resource* GetShaderInfoResource() = 0;
-	virtual const int GetShaderInfoHeapPosition() const = 0;
-
-	virtual ID3D12PipelineState* GetPipelineState() = 0;
-	virtual ID3D12RootSignature* GetRootSignature() = 0;
-
-	virtual ID3DBlob* GetVertexShader() = 0;
-	virtual ID3DBlob* GetPixelShader() = 0;
-
-	virtual void SetRenderTarget(IRenderTarget* pRT) = 0;
-	virtual IRenderTarget* GetRenderTarget() = 0;
-
-	virtual void SetNormalRenderTarget(IRenderTarget* pRT) = 0;
-	virtual IRenderTarget* GetNormalRenderTarget() = 0;
-
-	virtual void SetDepthStencil(IDepthStencil* pDS) = 0;
-	virtual IDepthStencil* GetDepthStencil() = 0;
-
-	virtual int GetIndexNum() const = 0;
-
-	virtual ACCESS_ROOT_PARAM GetAccessRootParam() = 0;
-
-	// ガウシアン用.
-	virtual void EnableGaussianX() = 0;
-	virtual void EnableGaussianY() = 0;
-	virtual void DisableGaussian() = 0;
-	virtual ID3D12Resource* GetGaussianResource() = 0;
-	virtual const int GetGaussianHeapPosition() const = 0;
-
-	// 法線用.
-	virtual ITexture& GetNormalTexture() = 0;
-
-	// ブルーム用.
-	virtual ID3D12PipelineState* GetBloomPipelineState() = 0;
-	virtual void SetBloomRenderTarget(IRenderTarget* pRT) = 0;
-	virtual IRenderTarget* GetBloomRenderTarget() = 0;
-	virtual void SetBloomShrinkRenderTarget(IRenderTarget* pRT) = 0;
-	virtual IRenderTarget* GetBloomShrinkRenderTarget() = 0;
-
-	// 被写界深度.
-	virtual void EnableDof() = 0;
-	virtual void DisableDof() = 0;
-	virtual bool IsEnableDof() = 0;
-	virtual void SetDofRenderTarget(IRenderTarget* pRT) = 0;
-	virtual IRenderTarget* GetDofRenderTarget() = 0;
-	virtual void SetDofShrinkRenderTarget(IRenderTarget* pRT) = 0;
-	virtual IRenderTarget* GetDofShrinkRenderTarget() = 0;
-
-	// SSAO.
-	virtual void EnableSsao(bool b) = 0;
-	virtual bool IsEnableSsao() = 0;
-	virtual ID3D12PipelineState* GetSSAOPipelineState() = 0;
-	virtual void SetSSAORenderTarget(IRenderTarget* pRT) = 0;
-	virtual IRenderTarget* GetSSAORenderTarget() = 0;
-};
-
-class ISpriteNew {
 public:
 	virtual void Update() = 0;
 	virtual void Render(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;

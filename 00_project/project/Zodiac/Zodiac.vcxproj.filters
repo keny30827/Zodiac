@@ -90,6 +90,12 @@
     <Filter Include="ソース ファイル\graphics\shader\ssao">
       <UniqueIdentifier>{f0d32467-7f08-459a-b4a8-79e147636bab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\graphics\shader\deferred">
+      <UniqueIdentifier>{93ee45d3-f997-4d22-ad08-bd0cd43814ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\shader\deferred">
+      <UniqueIdentifier>{567d4107-342e-4081-a992-a642b5f12da0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -160,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="graphics\shader\ssao\SSAO.cpp">
       <Filter>ソース ファイル\graphics\shader\ssao</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\shader\deferred\DeferredRender.cpp">
+      <Filter>ソース ファイル\graphics\shader\deferred</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +241,9 @@
     <ClInclude Include="graphics\shader\ssao\SSAO.h">
       <Filter>ソース ファイル\graphics\shader\ssao</Filter>
     </ClInclude>
+    <ClInclude Include="graphics\shader\deferred\DeferredRender.h">
+      <Filter>ソース ファイル\graphics\shader\deferred</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\BasicVertexShader.hlsl">
@@ -279,6 +291,12 @@
     <FxCompile Include="shader\ssao\SSAOVS.hlsl">
       <Filter>ソース ファイル\shader\ssao</Filter>
     </FxCompile>
+    <FxCompile Include="shader\deferred\DeferredPS.hlsl">
+      <Filter>ソース ファイル\shader\deferred</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\deferred\DeferredVS.hlsl">
+      <Filter>ソース ファイル\shader\deferred</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\header\DataSet.hlsli">
@@ -304,6 +322,9 @@
     </None>
     <None Include="shader\ssao\SSAODataSet.hlsli">
       <Filter>ソース ファイル\shader\ssao</Filter>
+    </None>
+    <None Include="shader\deferred\DeferredDataSet.hlsli">
+      <Filter>ソース ファイル\shader\deferred</Filter>
     </None>
   </ItemGroup>
 </Project>

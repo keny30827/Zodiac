@@ -155,6 +155,7 @@
     <ClCompile Include="graphics\shader\basic_sprite\BasicSprite.cpp" />
     <ClCompile Include="graphics\shader\bloom\Bloom.cpp" />
     <ClCompile Include="graphics\shader\Blur\GaussianBlur.cpp" />
+    <ClCompile Include="graphics\shader\deferred\DeferredRender.cpp" />
     <ClCompile Include="graphics\shader\dof\DepthOfView.cpp" />
     <ClCompile Include="graphics\shader\ShaderManager.cpp" />
     <ClCompile Include="graphics\shader\ssao\SSAO.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="graphics\shader\basic_sprite\BasicSprite.h" />
     <ClInclude Include="graphics\shader\bloom\Bloom.h" />
     <ClInclude Include="graphics\shader\Blur\GaussianBlur.h" />
+    <ClInclude Include="graphics\shader\deferred\DeferredRender.h" />
     <ClInclude Include="graphics\shader\dof\DepthOfView.h" />
     <ClInclude Include="graphics\shader\ShaderManager.h" />
     <ClInclude Include="graphics\shader\ssao\SSAO.h" />
@@ -295,6 +297,26 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="shader\deferred\DeferredPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="shader\deferred\DeferredVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="shader\dof\DepthOfViewPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
@@ -360,6 +382,7 @@
     <None Include="shader\basic_sprite\BasicSpriteDataSet.hlsli" />
     <None Include="shader\bloom\BloomDataSet.hlsli" />
     <None Include="shader\blur\GaussianBlurDataSet.hlsli" />
+    <None Include="shader\deferred\DeferredDataSet.hlsli" />
     <None Include="shader\dof\DepthOfViewDataSet.hlsli" />
     <None Include="shader\header\DataSet.hlsli" />
     <None Include="shader\header\ShadowDataSet.hlsli" />

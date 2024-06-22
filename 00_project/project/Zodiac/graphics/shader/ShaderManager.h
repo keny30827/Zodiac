@@ -7,6 +7,7 @@
 #include "basic_sprite/BasicSprite.h"
 #include "dof/DepthOfView.h"
 #include "ssao/SSAO.h"
+#include "deferred/DeferredRender.h"
 
 class CGraphicsController;
 class CShaderManager {
@@ -24,6 +25,7 @@ public:
 	CBasicSprite* GetBasicSpriteShader() { return &m_basicSprite; }
 	CDepthOfView* GetDepthOfViewShader() { return &m_dof; }
 	CSSAO* GetSSAOShader() { return &m_ssao; }
+	CDeferredRender* GetDeferredRenderShader() { return &m_deferredRender; }
 
 private:
 	CGaussianBlur m_gaussianBlur;
@@ -31,4 +33,5 @@ private:
 	CBasicSprite m_basicSprite;
 	CDepthOfView m_dof;
 	CSSAO m_ssao;
+	CDeferredRender m_deferredRender;
 };

@@ -149,6 +149,19 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 
 		// TODO 新描画設計テスト中.
 		// ここで、ディファードでSSAO込みの絵を書く.
+		{
+			auto* pDeferredShader = shaderMgr.GetDeferredRenderShader();
+			pDeferredShader->SetInputGBufferColor(&scene.GetColor());
+			pDeferredShader->SetInputGBufferNormal(&scene.GetNormal());
+			pDeferredShader->SetInputGBufferSSAO(&scene.GetSsao());
+			CSprite* pSprite = static_cast<CSprite*>(const_cast<ISprite*>(scene.GetFrameBuffer()));
+			pSprite->SetShader(pDeferredShader);
+			pSprite->Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
+	}
 #if 0
 		ISprite* pSprite = const_cast<ISprite*>(scene.GetFrameBuffer());
 		pSprite->SetRenderTarget(&scene.GetDof());

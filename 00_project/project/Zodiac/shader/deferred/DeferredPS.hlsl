@@ -13,11 +13,10 @@ float4 main(OutputVSPS input) : SV_TARGET
 
 	// 法線と内積とった結果を使う.ランバートの余弦則.
 	float brightnessValue = dot(normalize(lightPos), normalize(normal));
-	if (brightnessValue <= 0.0f) { brightnessValue = 1.0f; }
 	float4 brightness = float4(brightnessValue, brightnessValue, brightnessValue, 1.0f);
 
 	// SSAOの結果も入れる.
-	float4 ssao = psGBufSSSAO.Sample(psSamp, input.uv);
+	//float4 ssao = psGBufSSSAO.Sample(psSamp, input.uv);
 
-	return color * brightness * ssao;
+	return color * brightness;// *ssao;
 }

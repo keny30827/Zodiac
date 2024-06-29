@@ -154,6 +154,7 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 			pDeferredShader->SetInputGBufferColor(&scene.GetColor());
 			pDeferredShader->SetInputGBufferNormal(&scene.GetNormal());
 			pDeferredShader->SetInputGBufferSSAO(&scene.GetSsao());
+			pDeferredShader->SetInputGBufferObjectInfo(&scene.GetObjectInfo());
 			CSprite* pSprite = static_cast<CSprite*>(const_cast<ISprite*>(scene.GetFrameBuffer()));
 			pSprite->SetShader(pDeferredShader);
 			pSprite->Render(

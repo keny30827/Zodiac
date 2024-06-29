@@ -18,6 +18,7 @@ public:
 	void SetInputGBufferColor(IRenderTarget* pTex) { m_inputGBufferColor = pTex; }
 	void SetInputGBufferNormal(IRenderTarget* pTex) { m_inputGBufferNormal = pTex; }
 	void SetInputGBufferSSAO(IRenderTarget* pTex) { m_inputGBufferSSAO = pTex; }
+	void SetInputGBufferObjectInfo(IRenderTarget* pTex) { m_inputGBufferObjectInfo = pTex; }
 
 public:
 	ID3D12PipelineState* GetPipelineState() override { return m_pPipelineState; }
@@ -41,4 +42,5 @@ private:
 	IRenderTarget* m_inputGBufferColor = nullptr;
 	IRenderTarget* m_inputGBufferNormal = nullptr;
 	IRenderTarget* m_inputGBufferSSAO = nullptr;
+	IRenderTarget* m_inputGBufferObjectInfo = nullptr;
 };

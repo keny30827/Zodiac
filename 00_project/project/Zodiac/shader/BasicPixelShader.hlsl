@@ -49,10 +49,12 @@ OutputRenderTarget BasicPS(OutputVSPS input)
 
 	OutputRenderTarget output;
 	output.final = result;
-	output.color = (lightColor * diffuse * texColor * spTexColor + spaTexColor);
+	// TODO 雑すぎる.アンビエントとスペキュラはせめて分けないとあかん.
+	output.color = (diffuse * texColor * spTexColor + spaTexColor + specularColor + ambientColor);
 	output.normal = (normalize(input.normal) + 1.0f) / 2.0f;
 	float Y = dot(result.rgb, float3(0.299, 0.587, 0.1114));
 	output.highBright = (Y > 0.9f) ? result : 0.0f;
+	output.objectInfo = float4(1.0f, 0.0f, 0.0f, 0.0f);
 
 	// 地面影用のインスタンスは黒に.
 	if (input.instID == 1) {

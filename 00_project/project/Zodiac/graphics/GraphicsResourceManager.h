@@ -25,6 +25,7 @@ public:
 	CRenderTarget& GetDofShrinkBuffer() { return m_dofShrinkBuffer; }
 	CRenderTarget& GetDof() { return m_dof; }
 	CRenderTarget& GetSsao() { return m_ssao; }
+	CRenderTarget& GetObjectInfo() { return m_objectInfo; }
 
 	IDepthStencil& GetShadowMap() { return m_shadowMap; }
 	IDepthStencil& GetDofDepth() { return m_dofDepth; }
@@ -72,6 +73,8 @@ private:
 	CRenderTarget m_dof;
 	// SSAO用.
 	CRenderTarget m_ssao;
+	// オブジェクト情報用.
+	CRenderTarget m_objectInfo;
 
 	// 深度関連.
 	CShadowMap m_shadowMap;

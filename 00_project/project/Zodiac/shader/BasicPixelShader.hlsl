@@ -33,7 +33,8 @@ OutputRenderTarget BasicPS(OutputVSPS input)
 	float4 spaTexColor = float4(psSpaTex.Sample(psSamp, useUV));
 
 	// アンビエント（入射光は未考慮）.
-	float4 ambientColor = lightColor * float4(ambient, 1.0f) * texColor;
+	float4 ambientBase = float4(ambient, 1.0f) * texColor;
+	float4 ambientColor = lightColor * ambientBase;
 
 	// スペキュラー.
 	float4 specularColor = lightColor * float4(specular.xyz * pow(saturate(dot(reflect(-lightPos, input.normal), -input.ray)), specular.a), 1.0f);
@@ -50,7 +51,8 @@ OutputRenderTarget BasicPS(OutputVSPS input)
 	OutputRenderTarget output;
 	output.final = result;
 	// TODO 雑すぎる.アンビエントとスペキュラはせめて分けないとあかん.
-	output.color = (diffuse * texColor * spTexColor + spaTexColor + specularColor + ambientColor);
+	output.color = (diffuse * texColor * spTexColor + spaTexColor + ambientBase);
+	output.specular = specular;
 	output.normal = (normalize(input.normal) + 1.0f) / 2.0f;
 	float Y = dot(result.rgb, float3(0.299, 0.587, 0.1114));
 	output.highBright = (Y > 0.9f) ? result : 0.0f;

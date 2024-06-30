@@ -14,6 +14,7 @@ struct OutputRenderTarget {
 	float4 normal : SV_TARGET2;
 	float4 highBright : SV_TARGET3;
 	float4 objectInfo : SV_TARGET4;
+	float4 specular : SV_TARGET5;
 };
 
 Texture2D<float4> psTex : register(t0);

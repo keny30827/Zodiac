@@ -379,8 +379,7 @@ struct SShaderSpriteInfo {
 	DirectX::XMMATRIX toScreen = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX proj = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX projInv = DirectX::XMMatrixIdentity();
-	float isEnableDof = 0.0f;
-	float isEnableSsao = 0.0f;
+	DirectX::XMFLOAT3 eye = {};
 };
 
 struct SShaderGaussianInfo {

@@ -18,6 +18,7 @@ public:
 	CRenderTarget& GetGaussian1RT() { return m_gaussian1RT; }
 	CRenderTarget& GetGaussian2RT() { return m_gaussian2RT; }
 	CRenderTarget& GetColor() { return m_color; }
+	CRenderTarget& GetSpecular() { return m_specular; }
 	CRenderTarget& GetNormal() { return m_normal; }
 	CRenderTarget& GetHighBrightness() { return m_highBrightness; }
 	CRenderTarget& GetHighBrightnessShrinkBuffer() { return m_highBrightnessShrinkBuffer; }
@@ -63,6 +64,7 @@ private:
 	CRenderTarget m_gaussian2RT;
 	// ディファード用.
 	CRenderTarget m_color;
+	CRenderTarget m_specular;
 	CRenderTarget m_normal;
 	// ブルーム用.
 	CRenderTarget m_highBrightness;

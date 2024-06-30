@@ -155,6 +155,8 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 			pDeferredShader->SetInputGBufferNormal(&scene.GetNormal());
 			pDeferredShader->SetInputGBufferSSAO(&scene.GetSsao());
 			pDeferredShader->SetInputGBufferObjectInfo(&scene.GetObjectInfo());
+			pDeferredShader->SetInputGBufferSpecular(&scene.GetSpecular());
+			pDeferredShader->SetInputEye(scene.GetMainCamera()->GetEye());
 			CSprite* pSprite = static_cast<CSprite*>(const_cast<ISprite*>(scene.GetFrameBuffer()));
 			pSprite->SetShader(pDeferredShader);
 			pSprite->Render(

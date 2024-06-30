@@ -258,9 +258,6 @@
     <FxCompile Include="shader\ShadowVertexShader.hlsl">
       <Filter>ソース ファイル\shader</Filter>
     </FxCompile>
-    <FxCompile Include="shader\DeferredSpritePixelShader.hlsl">
-      <Filter>ソース ファイル\shader</Filter>
-    </FxCompile>
     <FxCompile Include="shader\blur\GaussianBlurPS.hlsl">
       <Filter>ソース ファイル\shader\blur</Filter>
     </FxCompile>

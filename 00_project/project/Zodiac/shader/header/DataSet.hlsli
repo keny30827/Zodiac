@@ -4,6 +4,7 @@ struct OutputVSPS {
 	float4 viewNormal : NORMAL1;
 	float4 ray : RAY;
 	float4 lightViewPos : TPOS;
+	float4 worldPos : WPOS;
 	float2 uv : TEXCOORD;
 	uint instID : SV_InstanceID;
 };
@@ -15,6 +16,7 @@ struct OutputRenderTarget {
 	float4 highBright : SV_TARGET3;
 	float4 objectInfo : SV_TARGET4;
 	float4 specular : SV_TARGET5;
+	float4 worldPos : SV_TARGET6;
 };
 
 Texture2D<float4> psTex : register(t0);

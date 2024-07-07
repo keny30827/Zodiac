@@ -54,6 +54,7 @@ OutputRenderTarget BasicPS(OutputVSPS input)
 	output.color = (diffuse * texColor * spTexColor + spaTexColor + ambientBase);
 	output.specular = specular;
 	output.normal = (normalize(input.normal) + 1.0f) / 2.0f;
+	output.worldPos = input.worldPos;
 	float Y = dot(result.rgb, float3(0.299, 0.587, 0.1114));
 	output.highBright = (Y > 0.9f) ? result : 0.0f;
 	output.objectInfo = float4(1.0f, 0.0f, 0.0f, 0.0f);

@@ -20,6 +20,7 @@ public:
 	void SetInputGBufferSSAO(IRenderTarget* pTex) { m_inputGBufferSSAO = pTex; }
 	void SetInputGBufferObjectInfo(IRenderTarget* pTex) { m_inputGBufferObjectInfo = pTex; }
 	void SetInputGBufferSpecular(IRenderTarget* pTex) { m_inputGBufferSpecular = pTex; }
+	void SetInputGBufferWorldPos(IRenderTarget* pTex) { m_inputGBufferWorldPos = pTex; }
 
 	// TODO ‚Æ‚è‚ ‚¦‚¸.
 	void SetInputEye(const DirectX::XMFLOAT3& eye) 
@@ -57,4 +58,5 @@ private:
 	IRenderTarget* m_inputGBufferSSAO = nullptr;
 	IRenderTarget* m_inputGBufferObjectInfo = nullptr;
 	IRenderTarget* m_inputGBufferSpecular = nullptr;
+	IRenderTarget* m_inputGBufferWorldPos = nullptr;
 };

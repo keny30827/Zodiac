@@ -19,6 +19,7 @@ OutputVSPS BasicVS(
 		output.pos = mul(shadow, output.pos);
 	}
 	output.lightViewPos = mul(lightView, output.pos);
+	output.worldPos = output.pos;
 	output.pos = mul(mul(proj, view), output.pos);
 	normal.w = 0.0f;	// ‚»‚àƒf[ƒ^‘¤‚Å1.0f‚ª“ü‚ç‚È‚¢‚æ‚¤‚É‚·‚×‚«.
 	output.normal = mul(world, normal);

@@ -20,6 +20,7 @@ public:
 	CRenderTarget& GetColor() { return m_color; }
 	CRenderTarget& GetSpecular() { return m_specular; }
 	CRenderTarget& GetNormal() { return m_normal; }
+	CRenderTarget& GetWorldPos() { return m_worldPos; }
 	CRenderTarget& GetHighBrightness() { return m_highBrightness; }
 	CRenderTarget& GetHighBrightnessShrinkBuffer() { return m_highBrightnessShrinkBuffer; }
 	CRenderTarget& GetBloom() { return m_bloom; }
@@ -66,6 +67,7 @@ private:
 	CRenderTarget m_color;
 	CRenderTarget m_specular;
 	CRenderTarget m_normal;
+	CRenderTarget m_worldPos;
 	// ƒuƒ‹[ƒ€—p.
 	CRenderTarget m_highBrightness;
 	CRenderTarget m_highBrightnessShrinkBuffer;

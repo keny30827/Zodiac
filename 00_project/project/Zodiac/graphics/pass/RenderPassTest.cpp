@@ -50,10 +50,12 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 		&scene.GetHighBrightness(),
 		&scene.GetObjectInfo(),
 		&scene.GetSpecular(),
+		&scene.GetWorldPos(),
 	};
 	GAME_COLOR pColor[] = {
 		GAME_COLOR::GAME_COLOR_WHITE,
 		GAME_COLOR::GAME_COLOR_WHITE,
+		GAME_COLOR::GAME_COLOR_BLACK,
 		GAME_COLOR::GAME_COLOR_BLACK,
 		GAME_COLOR::GAME_COLOR_BLACK,
 		GAME_COLOR::GAME_COLOR_BLACK,

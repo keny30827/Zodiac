@@ -10,6 +10,7 @@ bool CScene::Init(CGraphicsController& rGraphicsController, uint32_t width, uint
 	m_color.Init(rGraphicsController, width, height);
 	m_specular.Init(rGraphicsController, width, height);
 	m_normal.Init(rGraphicsController, width, height, ACCESS_ROOT_PARAM_G_BUF_NORMAL);
+	m_worldPos.Init(rGraphicsController, width, height);
 	m_highBrightness.Init(rGraphicsController, width, height);
 	m_highBrightnessShrinkBuffer.Init(rGraphicsController, width, height);
 	m_bloom.Init(rGraphicsController, width, height);
@@ -33,6 +34,7 @@ void CScene::Term()
 	m_bloom.Term();
 	m_highBrightnessShrinkBuffer.Term();
 	m_highBrightness.Term();
+	m_worldPos.Term();
 	m_normal.Term();
 	m_specular.Term();
 	m_color.Term();

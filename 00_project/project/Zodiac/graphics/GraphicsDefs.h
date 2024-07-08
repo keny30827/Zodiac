@@ -292,6 +292,13 @@ public:
 	virtual ID3D12RootSignature* GetRootSignature() = 0;
 };
 
+// デカール用.
+class IDecal {
+public:
+	virtual void Update() = 0;
+	virtual void Render(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
+};
+
 // ====================================================.
 // MMD用のデータ受け渡し用構造体.
 // MMDはマテリアル情報がファイル単位に分かれていないので....
@@ -373,6 +380,13 @@ struct SShaderCoordinateInfo {
 	DirectX::XMMATRIX lightView = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX bone[256] = { DirectX::XMMatrixIdentity() };
 	DirectX::XMFLOAT3 eye = {};
+};
+
+struct SShaderDecalInfo {
+	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX proj = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX lightView = DirectX::XMMatrixIdentity();
 };
 
 struct SShaderSpriteInfo {

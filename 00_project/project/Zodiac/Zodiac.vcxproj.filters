@@ -96,6 +96,12 @@
     <Filter Include="ソース ファイル\shader\deferred">
       <UniqueIdentifier>{567d4107-342e-4081-a992-a642b5f12da0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\object\decal">
+      <UniqueIdentifier>{7aff2262-cfe0-4861-99ab-6c223a72beef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\shader\decal">
+      <UniqueIdentifier>{61bd2119-9421-4d23-aa10-72f4306532ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -169,6 +175,9 @@
     </ClCompile>
     <ClCompile Include="graphics\shader\deferred\DeferredRender.cpp">
       <Filter>ソース ファイル\graphics\shader\deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="object\decal\Decal.cpp">
+      <Filter>ソース ファイル\object\decal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -244,6 +253,9 @@
     <ClInclude Include="graphics\shader\deferred\DeferredRender.h">
       <Filter>ソース ファイル\graphics\shader\deferred</Filter>
     </ClInclude>
+    <ClInclude Include="object\decal\Decal.h">
+      <Filter>ソース ファイル\object\decal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader\BasicVertexShader.hlsl">
@@ -294,6 +306,12 @@
     <FxCompile Include="shader\deferred\DeferredVS.hlsl">
       <Filter>ソース ファイル\shader\deferred</Filter>
     </FxCompile>
+    <FxCompile Include="shader\decal\DecalPS.hlsl">
+      <Filter>ソース ファイル\shader\decal</Filter>
+    </FxCompile>
+    <FxCompile Include="shader\decal\DecalVS.hlsl">
+      <Filter>ソース ファイル\shader\decal</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader\header\DataSet.hlsli">
@@ -322,6 +340,9 @@
     </None>
     <None Include="shader\deferred\DeferredDataSet.hlsli">
       <Filter>ソース ファイル\shader\deferred</Filter>
+    </None>
+    <None Include="shader\decal\DecalDataSet.hlsli">
+      <Filter>ソース ファイル\shader\decal</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -44,11 +44,14 @@ public:
 
 	const ICamera* GetMainCamera() const { return m_pMainCamera; }
 
+	const IDecal* Get2DDecal() const { return m_p2DDecal; }
+
 public:
 	void AddModel(const IModel* pModel) { m_objectList.push_back(pModel); }
 	void AddSprite(const ISprite* pObj) { m_spriteList.push_back(pObj); }
 	void SetFrameBuffer(const ISprite* pObj) { m_pFrameBuffer = pObj; }
 	void SetMainCamera(const ICamera* pObj) { m_pMainCamera = pObj; }
+	void Set2DDecal(const IDecal* pObj) { m_p2DDecal = pObj; }
 
 public:
 	void ClearAll() { ClearModel(); ClearSprite(); ClearFrameBuffer();  ClearCamera(); }
@@ -92,4 +95,5 @@ private:
 	std::vector<const ISprite*> m_spriteList = {};
 	const ISprite* m_pFrameBuffer = nullptr;
 	const ICamera* m_pMainCamera = nullptr;
+	const IDecal* m_p2DDecal = nullptr;
 };

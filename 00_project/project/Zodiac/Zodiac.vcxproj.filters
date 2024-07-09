@@ -102,6 +102,9 @@
     <Filter Include="ソース ファイル\shader\decal">
       <UniqueIdentifier>{61bd2119-9421-4d23-aa10-72f4306532ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\graphics\shader\decal">
+      <UniqueIdentifier>{3496a171-0141-46d9-846f-8ce6f9aaf782}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -179,6 +182,9 @@
     <ClCompile Include="object\decal\Decal.cpp">
       <Filter>ソース ファイル\object\decal</Filter>
     </ClCompile>
+    <ClCompile Include="graphics\shader\decal\2DDecal.cpp">
+      <Filter>ソース ファイル\graphics\shader\decal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\Application.h">
@@ -255,6 +261,9 @@
     </ClInclude>
     <ClInclude Include="object\decal\Decal.h">
       <Filter>ソース ファイル\object\decal</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\shader\decal\2DDecal.h">
+      <Filter>ソース ファイル\graphics\shader\decal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

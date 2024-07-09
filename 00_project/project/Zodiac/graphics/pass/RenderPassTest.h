@@ -2,6 +2,7 @@
 
 class CScene;
 class CGraphicsController;
+class CShaderManager;
 class CRenderPassTest {
 public:
 	CRenderPassTest() = default;
@@ -12,7 +13,5 @@ public:
 	void Term() {}
 
 public:
-	void Render(CScene& scene, CGraphicsController& graphicsController);
-
-private:
+	void Render(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr);
 };

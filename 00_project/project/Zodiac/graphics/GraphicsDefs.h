@@ -386,7 +386,6 @@ struct SShaderDecalInfo {
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX proj = DirectX::XMMatrixIdentity();
-	DirectX::XMMATRIX lightView = DirectX::XMMatrixIdentity();
 };
 
 struct SShaderSpriteInfo {

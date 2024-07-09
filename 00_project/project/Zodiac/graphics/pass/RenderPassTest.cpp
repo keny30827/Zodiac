@@ -1,8 +1,11 @@
 #include "RenderPassTest.h"
 #include "../GraphicsResourceManager.h"
 #include "../GraphicsController.h"
+#include "../shader/ShaderManager.h"
 
-void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsController)
+#include "../../object/decal/Decal.h"
+
+void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr)
 {
 	// テスト用パス.
 	// モデルをテスト用レンダーターゲットに書き出す.
@@ -69,5 +72,24 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 			pModel->Render(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), *(scene.GetMainCamera()), &viewPort, &scissor);
 		}
 		graphicsController.EndScene(pList, COUNTOF(pList), pColor, &scene.GetDofDepth());
+	}
+
+	IRenderTarget* pDecalList[] = {
+		&scene.GetColor(),
+	};
+	GAME_COLOR pDecalColor[] = {
+		GAME_COLOR::GAME_COLOR_INVALID,
+	};
+	// デカール.
+	if (graphicsController.BeginScene(pDecalList, COUNTOF(pDecalList), pDecalColor)) {
+		auto* pShader = shaderMgr.Get2DDecalShader();
+		pShader->SetShaderInfo(*scene.GetMainCamera());
+		pShader->SetInputBaseRT(&scene.GetNormal());
+		pShader->SetInputObjInfoRT(&scene.GetObjectInfo());
+		pShader->SetInputWorldPosRT(&scene.GetWorldPos());
+		C2DDecal* pDecal = static_cast<C2DDecal*>(const_cast<IDecal*>(scene.Get2DDecal()));
+		pDecal->SetShader(pShader);
+		pDecal->Render(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), &viewPort, &scissor);
+		graphicsController.EndScene(pDecalList, COUNTOF(pDecalList), pDecalColor);
 	}
 }

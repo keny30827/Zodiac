@@ -56,10 +56,10 @@ bool CDecalQuad::SetupVertex()
 	m_vertexList.clear();
 	SVertex vertex[] =
 	{
-		{ {m_pos.x, m_pos.y + m_size.y, m_pos.z, 0.0f},				{0.0f, 1.0f} },
-		{ {m_pos.x, m_pos.y, m_pos.z, 0.0f},						{0.0f, 0.0f} },
-		{ {m_pos.x + m_size.x, m_pos.y + +m_size.y, m_pos.z, 0.0f},	{1.0f, 1.0f} },
-		{ {m_pos.x + m_size.x, m_pos.y, m_pos.z, 0.0f},				{1.0f, 0.0f} },
+		{ {m_pos.x, m_pos.y + m_size.y, m_pos.z},				{0.0f, 1.0f} },
+		{ {m_pos.x, m_pos.y, m_pos.z},							{0.0f, 0.0f} },
+		{ {m_pos.x + m_size.x, m_pos.y + m_size.y, m_pos.z},	{1.0f, 1.0f} },
+		{ {m_pos.x + m_size.x, m_pos.y, m_pos.z},				{1.0f, 0.0f} },
 	};
 	for (uint32_t n = 0; n < _countof(vertex); n++) {
 		AddVertex(vertex[n]);

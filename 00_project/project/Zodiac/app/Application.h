@@ -12,6 +12,7 @@
 #include "../object/player/Player.h"
 #include "../object/camera/Camera.h"
 #include "../object/sprite/Sprite.h"
+#include "../object/decal/Decal.h"
 
 struct SApplicationOption {
 	std::string appClassName;
@@ -62,4 +63,5 @@ private:
 	CPlayer m_player2;
 	CCamera m_camera;
 	CSprite m_sprite;
+	C2DDecal m_2dDecal;
 };

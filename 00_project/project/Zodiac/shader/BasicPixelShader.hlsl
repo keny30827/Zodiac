@@ -50,7 +50,6 @@ OutputRenderTarget BasicPS(OutputVSPS input)
 
 	OutputRenderTarget output;
 	output.final = result;
-	// TODO 雑すぎる.アンビエントとスペキュラはせめて分けないとあかん.
 	output.color = (diffuse * texColor * spTexColor) + spaTexColor;
 	output.specular = specular;
 	output.normal = (normalize(input.normal) + 1.0f) / 2.0f;

@@ -26,7 +26,7 @@ bool CApplication::Init(SApplicationOption option)
 	if (!m_renderPassSprite.Init(m_graphicsController)) {
 		return false;
 	}
-	if (!m_player.Init(m_graphicsController, 0.0f, 0.0f, 0.0f)) {
+	if (!m_player.Init(m_graphicsController, 0.0f, 0.0f, 5.0f)) {
 		return false;
 	}
 	if (!m_player2.Init(m_graphicsController, 15.0f, 0.0f, 10.0f)) {
@@ -36,6 +36,9 @@ bool CApplication::Init(SApplicationOption option)
 		return false;
 	}
 	if (!m_camera.Init(option.w, option.h)) {
+		return false;
+	}
+	if (!m_2dDecal.Init(m_graphicsController, 0.0f, 5.0f, 0.0f, 5.0f, 5.0f)) {
 		return false;
 	}
 	return true;
@@ -128,11 +131,12 @@ void CApplication::UpdateGame()
 		m_scene.AddModel(&(m_player2.GetModel()));
 		m_scene.SetMainCamera(&m_camera);
 		m_scene.SetFrameBuffer(&m_sprite);
+		m_scene.Set2DDecal(&m_2dDecal);
 	}
 
 	// •`‰æ.
 	{
-		m_renderPassTest.Render(m_scene, m_graphicsController);
+		m_renderPassTest.Render(m_scene, m_graphicsController, m_shaderMgr);
 		m_renderPassSprite.Render(m_scene, m_graphicsController, m_shaderMgr);
 	}
 

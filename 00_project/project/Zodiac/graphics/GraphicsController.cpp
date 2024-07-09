@@ -637,8 +637,10 @@ bool CGraphicsController::BeginScene(IRenderTarget** pRTList, const int nListNum
 			// 使える状態に.
 			m_commandWrapper.ChangeBarrierState(pRTList[n]->GetResourceBattier(), D3D12_RESOURCE_STATE_RENDER_TARGET);
 			// 中身をクリアしておく.
-			float* pTmpColor = (pColor[n] == GAME_COLOR::GAME_COLOR_BLACK) ? black : white;
-			m_commandWrapper.ClearRenderTarget(handles[n], pTmpColor);
+			if (IsValidGameColor(pColor[n])) {
+				float* pTmpColor = (pColor[n] == GAME_COLOR::GAME_COLOR_BLACK) ? black : white;
+				m_commandWrapper.ClearRenderTarget(handles[n], pTmpColor);
+			}
 		}
 	}
 

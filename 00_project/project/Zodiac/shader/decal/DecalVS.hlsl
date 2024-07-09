@@ -6,7 +6,7 @@ OutputVSPS mainVS(
 	)
 {
 	OutputVSPS output;
-	output.pos = mul(world, pos);
+	output.pos = pos;//mul(world, pos);
 	output.worldPos = output.pos;
 	output.pos = mul(mul(proj, view), output.pos);
 	output.uv = uv;

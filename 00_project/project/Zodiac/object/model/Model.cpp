@@ -744,11 +744,14 @@ bool CModel::BuildPipelineState(CGraphicsController& graphicsController)
 
 	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-	desc.NumRenderTargets = 4;
+	desc.NumRenderTargets = 7;
 	desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.RTVFormats[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.RTVFormats[4] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.RTVFormats[5] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.RTVFormats[6] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;

@@ -1,6 +1,7 @@
 struct OutputVSPS {
 	float4 pos : SV_POSITION;
 	float4 worldPos : WPOS;
+	float4 projPos : PPOS;
 	float2 uv : TEXCOORD;
 };
 

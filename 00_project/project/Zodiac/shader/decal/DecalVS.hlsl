@@ -8,7 +8,8 @@ OutputVSPS mainVS(
 	OutputVSPS output;
 	output.pos = pos;//mul(world, pos);
 	output.worldPos = output.pos;
-	output.pos = mul(mul(proj, view), output.pos);
+	output.projPos = mul(mul(proj, view), output.pos);
+	output.pos = output.projPos;
 	output.uv = uv;
 	return output;
 }

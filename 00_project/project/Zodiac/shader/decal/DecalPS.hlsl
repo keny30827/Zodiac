@@ -2,21 +2,21 @@
 
 OutputRenderTarget mainPS(OutputVSPS input)
 {
-	float2 useUV = input.uv * float2(1.0f, -1.0f);
+	float3 screenPos = input.projPos.xyz / input.projPos.w;
+	float2 uv = (float2(screenPos.x, screenPos.y) + float2(1.0f, 1.0f)) * float2(0.5f, -0.5f);
 
-	// TODO ここのUVは全画面でのUV値計算をしないといけない.
-	float4 objInfo = psObjInfo.Sample(psSamp, useUV);
+	float4 objInfo = psObjInfo.Sample(psSamp, uv);
 	if (objInfo.r < 1.0f) {
 		discard;
 	}
 
-	// TODO ここのUVは全画面でのUV値計算をしないといけない.
-	float4 worldInfo = psWorldPos.Sample(psSamp, useUV);
+	float4 worldInfo = psWorldPos.Sample(psSamp, uv);
 	if (worldInfo.z < input.worldPos.z) {
 		discard;
 	}
 
-	float4 color = psTex.Sample(psSamp, useUV);
+	float2 localUV = input.uv * float2(1.0f, -1.0f);
+	float4 color = psTex.Sample(psSamp, localUV);
 
 	OutputRenderTarget output;
 	output.color = color;

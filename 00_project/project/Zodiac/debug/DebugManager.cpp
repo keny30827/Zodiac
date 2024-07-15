@@ -18,9 +18,9 @@ bool CDebugManager::Init(CGraphicsController& rGraphicsController, HWND hWnd)
 	ImGui_ImplWin32_Init(hWnd);
 	ImGui_ImplDX12_Init(
 		rGraphicsController.GetGraphicsDevice(), 1, DXGI_FORMAT_R8G8B8A8_UNORM,
-		rGraphicsController.GetHeapWrapper().GetDescriptorHeap(HEAP_CATEGORY_DEBUG), 
-		rGraphicsController.GetHeapWrapper().GetDescriptorHeap(HEAP_CATEGORY_DEBUG)->GetCPUDescriptorHandleForHeapStart(),
-		rGraphicsController.GetHeapWrapper().GetDescriptorHeap(HEAP_CATEGORY_DEBUG)->GetGPUDescriptorHandleForHeapStart());
+		rGraphicsController.GetHeapWrapper().GetDescriptorHeap(HEAP_CATEGORY_HUGE), 
+		rGraphicsController.GetHeapWrapper().GetDescriptorHeap(HEAP_CATEGORY_HUGE)->GetCPUDescriptorHandleForHeapStart(),
+		rGraphicsController.GetHeapWrapper().GetDescriptorHeap(HEAP_CATEGORY_HUGE)->GetGPUDescriptorHandleForHeapStart());
 	return true;
 }
 
@@ -45,7 +45,6 @@ void CDebugManager::UpdateGUI()
 
 void CDebugManager::End()
 {
-	ImGui::EndFrame();
 }
 
 void CDebugManager::Render(CGraphicsController& rGraphicsController)

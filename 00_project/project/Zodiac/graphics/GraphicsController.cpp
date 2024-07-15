@@ -157,6 +157,8 @@ bool CHeapWrapper::Init(ID3D12Device* m_pDevice)
 	}
 
 	memset(m_descriptorHeapListNextIndex, 0, sizeof(m_descriptorHeapListNextIndex));
+	// 先頭の2048個分をとりあえずデバッグ用に.
+	m_descriptorHeapListNextIndex[HEAP_CATEGORY_HUGE] = 2048;
 
 	return true;
 }

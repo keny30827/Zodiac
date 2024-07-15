@@ -1,7 +1,18 @@
 #include "app/Application.h"
 
+#if defined(DEBUG)
+#include "imgui.h"
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
+
 LRESULT WinProc(HWND hWnd, uint32_t msg, WPARAM wParam, LPARAM lParam)
 {
+#if defined(DEBUG)
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) {
+		return true;
+	}
+#endif
+
 	switch (msg) {
 	case WM_DESTROY:
 	{

@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app\Application.cpp" />
+    <ClCompile Include="debug\DebugManager.cpp" />
     <ClCompile Include="graphics\GraphicsController.cpp" />
     <ClCompile Include="graphics\GraphicsResourceManager.cpp" />
     <ClCompile Include="graphics\pass\RenderPassSprite.cpp" />
@@ -185,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app\Application.h" />
+    <ClInclude Include="debug\DebugManager.h" />
     <ClInclude Include="graphics\GraphicsController.h" />
     <ClInclude Include="graphics\GraphicsDefs.h" />
     <ClInclude Include="graphics\GraphicsResourceManager.h" />

@@ -132,9 +132,9 @@ bool CHeapWrapper::Init(ID3D12Device* m_pDevice)
 		D3D12_DESCRIPTOR_HEAP_DESC desc = {};
 		desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 		desc.NodeMask = 0;
-		desc.NumDescriptors = GetHeapSize(HEAP_CATEGORY_GAUSSIAN_TABLE);
+		desc.NumDescriptors = GetHeapSize(HEAP_CATEGORY_DEBUG);
 		desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-		HRESULT ret = m_pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_pDescriptorHeapList[HEAP_CATEGORY_GAUSSIAN_TABLE]));
+		HRESULT ret = m_pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_pDescriptorHeapList[HEAP_CATEGORY_DEBUG]));
 		VRETURN_RET(ret == S_OK, false);
 	}
 	{

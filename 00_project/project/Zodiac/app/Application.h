@@ -14,6 +14,10 @@
 #include "../object/sprite/Sprite.h"
 #include "../object/decal/Decal.h"
 
+#if defined(DEBUG)
+#include "../debug/DebugManager.h"
+#endif
+
 struct SApplicationOption {
 	std::string appClassName;
 	std::string appTitleName;
@@ -47,6 +51,9 @@ public:
 	inline HWND GetWindowHandle() const { return m_hWnd; }
 
 private:
+	void OnRenderTail(CGraphicsController* pController);
+
+private:
 	// Windowê∂ê¨ópÇÃïœêî.
 	SApplicationOption m_option;
 	WNDCLASSEX m_windowClass;
@@ -64,4 +71,8 @@ private:
 	CCamera m_camera;
 	CSprite m_sprite;
 	C2DDecal m_2dDecal;
+
+#if defined(DEBUG)
+	CDebugManager m_debugManager;
+#endif
 };

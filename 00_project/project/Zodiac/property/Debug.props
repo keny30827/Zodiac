@@ -7,6 +7,9 @@
     <Link>
       <AdditionalDependencies>.\lib\DirectXTex-master\DirectXTex\Bin\Windows10_2019\x64\Debug\DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ClCompile>
+      <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

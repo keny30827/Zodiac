@@ -29,6 +29,7 @@ bool CRenderPassSprite::Init(CGraphicsController& graphicsController)
 
 void CRenderPassSprite::Term()
 {
+	m_appRenderTailCallback = nullptr;
 	m_postEffectBuffer.Term();
 }
 
@@ -172,6 +173,10 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 		pSprite->EnableSsao(false);
 		pSprite->Render(graphicsController, &viewPort, &scissor);
 #endif
+
+		if (m_appRenderTailCallback) {
+			(m_appRenderTailCallback)(&graphicsController);
+		}
 
 		graphicsController.EndScene();
 	}

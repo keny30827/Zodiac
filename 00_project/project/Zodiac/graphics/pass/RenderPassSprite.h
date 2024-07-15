@@ -17,6 +17,9 @@ public:
 public:
 	void Render(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr);
 
+public:
+	void SetRenderTailCallback(FFuncCallbackRenderTail f) { m_appRenderTailCallback = f; }
+
 private:
 	void RenderBloom(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor);
 	void RenderDof(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr, D3D12_VIEWPORT& viewPort, D3D12_RECT& scissor);
@@ -33,4 +36,6 @@ private:
 	CSprite m_ssao;
 
 	CSprite m_postEffectBuffer;
+
+	FFuncCallbackRenderTail m_appRenderTailCallback = nullptr;
 };

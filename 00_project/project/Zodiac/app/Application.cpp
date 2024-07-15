@@ -41,6 +41,20 @@ bool CApplication::Init(SApplicationOption option)
 	if (!m_2dDecal.Init(m_graphicsController, 0.0f, 5.0f, 0.0f, 5.0f, 5.0f)) {
 		return false;
 	}
+#if defined(DEBUG)
+	if (!m_debugManager.Init(m_graphicsController, m_hWnd)) {
+		return false;
+	}
+#endif
+
+	// コールバック仕込み場.
+	{
+		auto CallbackObj = [&](CGraphicsController* p) {
+			OnRenderTail(p);
+		};
+		m_renderPassSprite.SetRenderTailCallback(CallbackObj);
+	}
+
 	return true;
 }
 
@@ -78,6 +92,9 @@ bool CApplication::InitWindow(SApplicationOption option)
 
 void CApplication::Term()
 {
+#if defined(DEBUG)
+	m_debugManager.Term();
+#endif
 	m_renderPassSprite.Term();
 	m_renderPassTest.Term();
 	m_shaderMgr.Term();
@@ -114,6 +131,10 @@ bool CApplication::Update()
 
 void CApplication::UpdateGame()
 {
+#if defined(DEBUG)
+	m_debugManager.Begin();
+#endif
+
 	// ゲーム内でのオブジェクト更新.
 	{
 		m_player.Update();
@@ -123,6 +144,10 @@ void CApplication::UpdateGame()
 		// カメラを合わせるのは下目.
 		focusPos.y += 10.f;
 		m_camera.Update(&focusPos);
+
+#if defined(DEBUG)
+		m_debugManager.UpdateGUI();
+#endif
 	}
 
 	// 描画登録.
@@ -142,4 +167,15 @@ void CApplication::UpdateGame()
 
 	// 登録分は破棄する.
 	m_scene.ClearAll();
+
+#if defined(DEBUG)
+	m_debugManager.End();
+#endif
+}
+
+void CApplication::OnRenderTail(CGraphicsController* pController)
+{
+#if defined(DEBUG)
+	m_debugManager.Render(*pController);
+#endif
 }

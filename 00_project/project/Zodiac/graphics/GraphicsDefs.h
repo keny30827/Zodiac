@@ -31,6 +31,12 @@
 #define SAEF_DELETE(p)		{ if (p != nullptr) { delete p; p = nullptr; } }
 
 // ====================================================.
+// 便利コールバック.
+// ====================================================.
+class CGraphicsController;
+using FFuncCallbackRenderTail = std::function<void(CGraphicsController*)>;
+
+// ====================================================.
 // 便利関数.いずれどこからでもアクセスできるユーティリティクラスに移す.
 // ====================================================.
 
@@ -86,7 +92,9 @@ enum HEAP_CATEGORY {
 	HEAP_CATEGORY_DEPTH_STENCIL_SHADER_VIEW,
 	HEAP_CATEGORY_RENDER_TARGET,
 	HEAP_CATEGORY_RENDER_TARGET_SHADER_VIEW,
-	HEAP_CATEGORY_GAUSSIAN_TABLE,
+
+	HEAP_CATEGORY_DEBUG,
+	
 	HEAP_CATEGORY_TEXTURE,
 
 	HEAP_CATEGORY_HUGE,

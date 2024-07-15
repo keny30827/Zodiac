@@ -25,8 +25,8 @@ int main()
 	option.proc = WinProc;
 	option.x = 0;
 	option.y = 0;
-	option.w = 600;
-	option.h = 600;
+	option.w = 800;
+	option.h = 800;
 	option.windowStyle = WS_OVERLAPPEDWINDOW;
 	option.windowExStyle = WS_EX_TOPMOST | WS_EX_WINDOWEDGE;
 

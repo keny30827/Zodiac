@@ -39,7 +39,7 @@ int main()
 	option.w = 800;
 	option.h = 800;
 	option.windowStyle = WS_OVERLAPPEDWINDOW;
-	option.windowExStyle = WS_EX_TOPMOST | WS_EX_WINDOWEDGE;
+	option.windowExStyle = WS_EX_WINDOWEDGE;
 
 	CApplication app;
 	if (app.Init(option)) {

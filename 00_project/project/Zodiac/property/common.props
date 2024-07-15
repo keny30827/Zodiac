@@ -8,7 +8,7 @@
       <AdditionalDependencies>d3d12.lib;dxgi.lib;d3dcompiler.lib;RuntimeObject.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>lib\DirectXTex-master\DirectXTex</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib\DirectXTex-master\DirectXTex;lib\imgui</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />

@@ -40,7 +40,7 @@ void CDebugManager::Begin()
 
 void CDebugManager::UpdateGUI()
 {
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 }
 
 void CDebugManager::End()

@@ -76,8 +76,10 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 
 	IRenderTarget* pDecalList[] = {
 		&scene.GetColor(),
+		& scene.GetObjectInfo(),
 	};
 	GAME_COLOR pDecalColor[] = {
+		GAME_COLOR::GAME_COLOR_INVALID,
 		GAME_COLOR::GAME_COLOR_INVALID,
 	};
 	// ÉfÉJÅ[Éã.

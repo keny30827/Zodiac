@@ -7,6 +7,7 @@ struct OutputVSPS {
 
 struct OutputRenderTarget {
 	float4 color : SV_TARGET0;
+	float4 objInfo : SV_TARGET1;
 };
 
 Texture2D<float4> psTex : register(t0);

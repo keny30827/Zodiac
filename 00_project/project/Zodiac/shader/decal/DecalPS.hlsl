@@ -17,9 +17,14 @@ OutputRenderTarget mainPS(OutputVSPS input)
 
 	float2 localUV = input.uv * float2(1.0f, -1.0f);
 	float4 color = psTex.Sample(psSamp, localUV);
+	// çïÇÕÉ}ÉXÉNÇµÇƒÇ®Ç≠.
+	if (!any(color.xyz)) {
+		discard;
+	}
 
 	OutputRenderTarget output;
 	output.color = color;
+	output.objInfo = float4(objInfo.r, 0.0f, 0.0f, 0.0f);
 
 	return output;
 }

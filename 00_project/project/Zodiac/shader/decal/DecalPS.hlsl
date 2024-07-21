@@ -15,6 +15,8 @@ OutputRenderTarget mainPS(OutputVSPS input)
 		discard;
 	}
 
+	float4 baseColor = psColor.Sample(psSamp, uv);
+
 	float2 localUV = input.uv * float2(1.0f, -1.0f);
 	float4 color = psTex.Sample(psSamp, localUV);
 	// 黒はマスクしておく.
@@ -22,8 +24,11 @@ OutputRenderTarget mainPS(OutputVSPS input)
 		discard;
 	}
 
+	// ベースの色とブレンドする.
+	float3 blendColor = (color.xyz * min(color.a, 1.0f)) + (baseColor.xyz * max(1.0f - color.a, 0.0f));
+
 	OutputRenderTarget output;
-	output.color = color;
+	output.color = float4(blendColor.x, blendColor.y, blendColor.z, min(color.a + baseColor.a, 1.0f));
 	output.objInfo = float4(objInfo.r, 0.0f, 0.0f, 0.0f);
 
 	return output;

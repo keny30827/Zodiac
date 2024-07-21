@@ -18,6 +18,7 @@ public:
 	void SetInputBaseRT(IRenderTarget* pTex) { m_inputBaseRT = pTex; }
 	void SetInputObjInfoRT(IRenderTarget* pTex) { m_inputObjInfoRT = pTex; }
 	void SetInputWorldPosRT(IRenderTarget* pTex) { m_inputWorldPosRT = pTex; }
+	void SetInputColorRT(IRenderTarget* pTex) { m_inputColorRT = pTex; }
 	void SetShaderInfo(const ICamera& rCamera)
 	{
 		m_sceneInfo = SShaderDecalInfo();
@@ -53,4 +54,5 @@ private:
 	IRenderTarget* m_inputBaseRT = nullptr;
 	IRenderTarget* m_inputObjInfoRT = nullptr;
 	IRenderTarget* m_inputWorldPosRT = nullptr;
+	IRenderTarget* m_inputColorRT = nullptr;
 };

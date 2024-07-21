@@ -99,7 +99,7 @@ void C2DDecalShader::Init(CGraphicsController& graphicsController)
 	{
 		HRESULT ret = S_FALSE;
 
-		D3D12_DESCRIPTOR_RANGE descRange[4] = {};
+		D3D12_DESCRIPTOR_RANGE descRange[5] = {};
 		{
 			// 座標変換行列.
 			descRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
@@ -124,10 +124,16 @@ void C2DDecalShader::Init(CGraphicsController& graphicsController)
 			descRange[3].BaseShaderRegister = 2;
 			descRange[3].NumDescriptors = 1;
 			descRange[3].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+			// 色.
+			descRange[4].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+			descRange[4].BaseShaderRegister = 3;
+			descRange[4].NumDescriptors = 1;
+			descRange[4].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 		}
 
 		// ルートパラメータ自体は、ヒープ分用意する.
-		D3D12_ROOT_PARAMETER rootParam[4] = {};
+		D3D12_ROOT_PARAMETER rootParam[5] = {};
 		{
 			rootParam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 			rootParam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -148,6 +154,11 @@ void C2DDecalShader::Init(CGraphicsController& graphicsController)
 			rootParam[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 			rootParam[3].DescriptorTable.pDescriptorRanges = &descRange[3];
 			rootParam[3].DescriptorTable.NumDescriptorRanges = 1;
+
+			rootParam[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+			rootParam[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+			rootParam[4].DescriptorTable.pDescriptorRanges = &descRange[4];
+			rootParam[4].DescriptorTable.NumDescriptorRanges = 1;
 		}
 
 		D3D12_STATIC_SAMPLER_DESC samplerDesc[1] = {};
@@ -271,6 +282,7 @@ void C2DDecalShader::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& 
 	VRETURN(m_inputBaseRT);
 	VRETURN(m_inputObjInfoRT);
 	VRETURN(m_inputWorldPosRT);
+	VRETURN(m_inputColorRT);
 
 	// コマンドリストへの設定.
 	{
@@ -288,6 +300,7 @@ void C2DDecalShader::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& 
 			commandWrapper.SetGraphicsRootDescriptorTable(1, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputBaseRT->GetSrvHeapPosition()));
 			commandWrapper.SetGraphicsRootDescriptorTable(2, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputObjInfoRT->GetSrvHeapPosition()));
 			commandWrapper.SetGraphicsRootDescriptorTable(3, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputWorldPosRT->GetSrvHeapPosition()));
+			commandWrapper.SetGraphicsRootDescriptorTable(4, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputColorRT->GetSrvHeapPosition()));
 		}
 	}
 }

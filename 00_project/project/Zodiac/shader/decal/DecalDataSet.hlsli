@@ -13,6 +13,7 @@ struct OutputRenderTarget {
 Texture2D<float4> psTex : register(t0);
 Texture2D<float4> psObjInfo : register(t1);
 Texture2D<float4> psWorldPos : register(t2);
+Texture2D<float4> psColor : register(t3);
 SamplerState psSamp : register(s0);
 
 cbuffer cbuff0 : register(b0) {

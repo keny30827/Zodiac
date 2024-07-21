@@ -76,7 +76,7 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 
 	IRenderTarget* pDecalList[] = {
 		&scene.GetColor(),
-		& scene.GetObjectInfo(),
+		&scene.GetObjectInfo(),
 	};
 	GAME_COLOR pDecalColor[] = {
 		GAME_COLOR::GAME_COLOR_INVALID,
@@ -89,6 +89,7 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 		pShader->SetInputBaseRT(&scene.GetNormal());
 		pShader->SetInputObjInfoRT(&scene.GetObjectInfo());
 		pShader->SetInputWorldPosRT(&scene.GetWorldPos());
+		pShader->SetInputColorRT(&scene.GetColor());
 		C2DDecal* pDecal = static_cast<C2DDecal*>(const_cast<IDecal*>(scene.Get2DDecal()));
 		pDecal->SetShader(pShader);
 		pDecal->Render(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), &viewPort, &scissor);

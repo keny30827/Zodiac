@@ -47,6 +47,14 @@ bool CApplication::Init(SApplicationOption option)
 	}
 #endif
 
+	// 事前設定.
+	{
+		DirectX::XMFLOAT3 focusPos = m_player.GetPos();
+		// カメラを合わせるのは下目.
+		focusPos.y += 10.f;
+		m_camera.Update(&focusPos);
+	}
+
 	// コールバック仕込み場.
 	{
 		auto CallbackObj = [&](CGraphicsController* p) {
@@ -137,17 +145,13 @@ void CApplication::UpdateGame()
 
 	// ゲーム内でのオブジェクト更新.
 	{
+#if defined(DEBUG)
+		m_debugManager.UpdateGUI(*this);
+#endif
 		m_player.Update();
 		m_player2.Update();
+		m_camera.Update();
 
-		DirectX::XMFLOAT3 focusPos = m_player.GetPos();
-		// カメラを合わせるのは下目.
-		focusPos.y += 10.f;
-		m_camera.Update(&focusPos);
-
-#if defined(DEBUG)
-		m_debugManager.UpdateGUI();
-#endif
 	}
 
 	// 描画登録.

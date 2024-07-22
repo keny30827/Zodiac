@@ -1,5 +1,6 @@
 #include "DebugManager.h"
 
+#include "../app/Application.h"
 #include "../graphics/GraphicsController.h"
 
 #include "imgui.h"
@@ -38,9 +39,33 @@ void CDebugManager::Begin()
 	ImGui::NewFrame();
 }
 
-void CDebugManager::UpdateGUI()
+void CDebugManager::UpdateGUI(CApplication& app)
 {
-	//ImGui::ShowDemoWindow();
+	if (ImGui::Begin(u8"debug", &m_isOpen)) {
+		if (ImGui::CollapsingHeader(u8"camera")) {
+			{
+				bool isInput = false;
+				DirectX::XMFLOAT3 eye = app.GetCamera().GetEye();
+				isInput |= ImGui::InputFloat(u8"caemra eye x", &eye.x, 1.0f, 10.0f);
+				isInput |= ImGui::InputFloat(u8"caemra eye y", &eye.y, 1.0f, 10.0f);
+				isInput |= ImGui::InputFloat(u8"caemra eye z", &eye.z, 1.0f, 10.0f);
+				if (isInput) {
+					app.GetCamera().OnDebugInputEye(eye);
+				}
+			}
+			{
+				bool isInput = false;
+				DirectX::XMFLOAT3 at = app.GetCamera().GetAt();
+				isInput |= ImGui::InputFloat(u8"caemra at x", &at.x, 1.0f, 10.0f);
+				isInput |= ImGui::InputFloat(u8"caemra at y", &at.y, 1.0f, 10.0f);
+				isInput |= ImGui::InputFloat(u8"caemra at z", &at.z, 1.0f, 10.0f);
+				if (isInput) {
+					app.GetCamera().OnDebugInputAt(at);
+				}
+			}
+		}
+	}
+	ImGui::End();
 }
 
 void CDebugManager::End()

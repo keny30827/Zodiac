@@ -3,6 +3,7 @@
 #include "../graphics/GraphicsDefs.h"
 
 class CGraphicsController;
+class CApplication;
 class CDebugManager {
 public:
 	CDebugManager() = default;
@@ -14,11 +15,11 @@ public:
 
 public:
 	void Begin();
-	void UpdateGUI();
+	void UpdateGUI(CApplication& app);
 	void End();
 
 	void Render(CGraphicsController& rGraphicsController);
 
 private:
-
+	bool m_isOpen = false;
 };

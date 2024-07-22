@@ -19,6 +19,12 @@ public:
 	virtual const DirectX::XMFLOAT3& GetAt() const override { return m_at; }
 	virtual const DirectX::XMFLOAT3& GetUp() const override { return m_up; }
 
+#if defined(DEBUG)
+public:
+	void OnDebugInputEye(DirectX::XMFLOAT3& e) { m_eye = e; }
+	void OnDebugInputAt(DirectX::XMFLOAT3& e) { m_at = e; }
+#endif
+
 private:
 	DirectX::XMMATRIX m_perspectiveMat = {};
 	DirectX::XMMATRIX m_view = {};

@@ -53,6 +53,12 @@ public:
 private:
 	void OnRenderTail(CGraphicsController* pController);
 
+#if defined(DEBUG)
+public:
+	CPlayer& GetPlayer() { return m_player; }
+	CCamera& GetCamera() { return m_camera; }
+#endif
+
 private:
 	// Window¶¬—p‚Ì•Ï”.
 	SApplicationOption m_option;

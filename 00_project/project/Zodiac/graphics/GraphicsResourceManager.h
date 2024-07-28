@@ -32,7 +32,7 @@ public:
 	IDepthStencil& GetShadowMap() { return m_shadowMap; }
 	IDepthStencil& GetDofDepth() { return m_dofDepth; }
 	IDepthStencil& GetSsaoDepth() { return m_ssaoDepth; }
-	
+	IDepthStencil& GetDepthPrepass() { return m_depthPrepass; }
 
 	uint32_t GetModelNum() const { return static_cast<uint32_t>(m_objectList.size()); }
 	const IModel* GetModel(const uint32_t idx) const { return m_objectList[idx];  }
@@ -85,6 +85,7 @@ private:
 
 	// 深度関連.
 	CShadowMap m_shadowMap;
+	CShadowMap m_depthPrepass;
 	// DOF用.
 	CShadowMap m_dofDepth;
 	// SSAO用.

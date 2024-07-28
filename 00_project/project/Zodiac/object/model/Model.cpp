@@ -10,6 +10,12 @@ CModel::~CModel()
 	SAEF_RELEASE(m_pShaderInfoResource);
 	SAEF_RELEASE(m_pIndexBufferResource);
 	SAEF_RELEASE(m_pVertexBufferResource);
+	SAEF_RELEASE(m_pShadowPipelineState);
+	SAEF_RELEASE(m_pShadowRootSignature);
+	SAEF_RELEASE(m_pShadowVertexShader);
+	SAEF_RELEASE(m_pDepthPrepassPipelineState);
+	SAEF_RELEASE(m_pDepthPrepassRootSignature);
+	SAEF_RELEASE(m_pDepthPrepassVertexShader);
 }
 
 bool CModel::Load(const char* foulderName, const char* fileName, CGraphicsController& graphicsController)
@@ -112,6 +118,10 @@ bool CModel::Load(const char* foulderName, const char* fileName, CGraphicsContro
 	VRETURN_RET(BuildShadowRootSignature(graphicsController), false);
 	VRETURN_RET(BuildShadowPipelineState(graphicsController), false);
 
+	VRETURN_RET(BuildDepthPrepassShader(graphicsController), false);
+	VRETURN_RET(BuildDepthPrepassRootSignature(graphicsController), false);
+	VRETURN_RET(BuildDepthPrepassPipelineState(graphicsController), false);
+
 	// 頂点などの固定情報をＣＰＵ->ＧＰＵにマッピング.
 	MapVertexData();
 	MapIndexData();
@@ -213,6 +223,50 @@ void CModel::RenderShadow(CCommandWrapper& commandWrapper, CHeapWrapper& heapWra
 		commandWrapper.SetPipelineState(GetShadowPipelineState());
 		// ルートシグネチャ設定.
 		commandWrapper.SetGraphicsRootSignature(GetShadowRootSignature());
+
+		// 処理するプリミティブタイプを設定.
+		commandWrapper.SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		// 頂点バッファビューを設定.
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferInfo = GetVertexBufferViewInfo();
+		D3D12_INDEX_BUFFER_VIEW indexBufferInfo = GetIndexBufferViewInfo();
+		commandWrapper.SetVertexBuffers(&vertexBufferInfo, 1);
+		commandWrapper.SetIndexBuffer(&indexBufferInfo);
+
+		// ビューポートとシザリングを設定.
+		if (pViewPort) {
+			commandWrapper.SetViewports(pViewPort, 1);
+		}
+		if (pScissor) {
+			commandWrapper.SetScissorRects(pScissor, 1);
+		}
+
+		// 頂点描画時などに使うシェーダー情報.
+		{
+			MapShaderInfo(rCamera);
+			D3D12_GPU_DESCRIPTOR_HANDLE shaderInfoHandle = heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_SHADER_INFO, GetShaderInfoHeapPosition());
+			ID3D12DescriptorHeap* ppLists[] = { heapWrapper.GetDescriptorHeap(HEAP_CATEGORY_SHADER_INFO) };
+			commandWrapper.SetDescriptorHeaps(ppLists, COUNTOF(ppLists));
+			commandWrapper.SetGraphicsRootDescriptorTable(GetAccessRootParam(), shaderInfoHandle);
+		}
+
+		// 描画.
+		uint32_t drawIndexNum = 0;
+		for (uint32_t n = 0; n < GetMaterialListNum(); n++) {
+			auto* pMaterial = GetAtMaterial(n);
+			commandWrapper.DrawIndexedInstanced(pMaterial->GetIndicesNum(), 1, drawIndexNum, 0, 0);
+			drawIndexNum += pMaterial->GetIndicesNum();
+		}
+	}
+}
+
+void CModel::RenderDepthPrepass(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor)
+{
+	// コマンドリストにコマンドを積みましょう.
+	{
+		// パイプライン設定.
+		commandWrapper.SetPipelineState(m_pDepthPrepassPipelineState);
+		// ルートシグネチャ設定.
+		commandWrapper.SetGraphicsRootSignature(m_pDepthPrepassRootSignature);
 
 		// 処理するプリミティブタイプを設定.
 		commandWrapper.SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -952,5 +1006,195 @@ bool CModel::BuildShadowPipelineState(CGraphicsController& graphicsController)
 	desc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
 	HRESULT ret = pDevice->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&m_pShadowPipelineState));
+	return (ret == S_OK);
+}
+
+bool CModel::BuildDepthPrepassShader(CGraphicsController& graphicsController)
+{
+	(void)graphicsController;
+	HRESULT ret = S_FALSE;
+	ID3DBlob* pErrorBlob = nullptr;
+
+	ret = D3DCompileFromFile(
+		L"shader\\DepthPrepassVertexShader.hlsl",
+		nullptr,
+		D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		"main",
+		"vs_5_0",
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		0,
+		&m_pDepthPrepassVertexShader,
+		&pErrorBlob);
+	VRETURN_RET(ret == S_OK, false);
+
+	return true;
+}
+
+bool CModel::BuildDepthPrepassRootSignature(CGraphicsController& graphicsController)
+{
+	VRETURN_RET(!m_pDepthPrepassRootSignature, false);
+
+	auto* pDevice = graphicsController.GetGraphicsDevice();
+	VRETURN_RET(pDevice, false);
+
+	HRESULT ret = S_FALSE;
+
+	D3D12_DESCRIPTOR_RANGE descRange[1] = {};
+	{
+		// 座標変換行列用.
+		descRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+		descRange[0].BaseShaderRegister = 0;
+		descRange[0].NumDescriptors = 1;
+		descRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	}
+
+	// ルートパラメータ自体は、ヒープ分用意する.
+	D3D12_ROOT_PARAMETER rootParam[ACCESS_ROOT_PARAM_NUM] = {};
+	{
+		ACCESS_ROOT_PARAM shaderInfo = ACCESS_ROOT_PARAM_SHADER_INFO;
+		rootParam[shaderInfo].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+		rootParam[shaderInfo].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+		rootParam[shaderInfo].DescriptorTable.pDescriptorRanges = &descRange[0];
+		rootParam[shaderInfo].DescriptorTable.NumDescriptorRanges = 1;
+	}
+
+	D3D12_STATIC_SAMPLER_DESC samplerDesc[1] = {};
+	{
+		samplerDesc[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		samplerDesc[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		samplerDesc[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		samplerDesc[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+		samplerDesc[0].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+		samplerDesc[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+		samplerDesc[0].MinLOD = 0;
+		samplerDesc[0].MaxLOD = D3D12_FLOAT32_MAX;
+		samplerDesc[0].ShaderRegister = 0;
+		samplerDesc[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	}
+
+	D3D12_ROOT_SIGNATURE_DESC desc = {};
+	desc.pParameters = rootParam;
+	desc.NumParameters = _countof(rootParam);
+	desc.pStaticSamplers = samplerDesc;
+	desc.NumStaticSamplers = _countof(samplerDesc);
+	desc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	ID3DBlob* pByteCode = nullptr;
+	ID3DBlob* pError = nullptr;
+	ret = D3D12SerializeRootSignature(&desc, D3D_ROOT_SIGNATURE_VERSION_1_0, &pByteCode, &pError);
+	VRETURN_RET(ret == S_OK, false);
+
+	ret = pDevice->CreateRootSignature(0, pByteCode->GetBufferPointer(), pByteCode->GetBufferSize(), IID_PPV_ARGS(&m_pDepthPrepassRootSignature));
+	if (ret != S_OK) {
+		pByteCode->Release();
+		return false;
+	}
+
+	return true;
+}
+
+bool CModel::BuildDepthPrepassPipelineState(CGraphicsController& graphicsController)
+{
+	VRETURN_RET(!m_pDepthPrepassPipelineState, false);
+
+	auto* pDevice = graphicsController.GetGraphicsDevice();
+	VRETURN_RET(pDevice, false);
+
+	D3D12_INPUT_ELEMENT_DESC vertexLayout[] =
+	{
+		{
+			"POSITION",
+			0,
+			DXGI_FORMAT_R32G32B32_FLOAT,
+			0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0,
+		},
+		{
+			"NORMAL",
+			0,
+			DXGI_FORMAT_R32G32B32_FLOAT,
+			0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0,
+		},
+		{
+			"TEXCOORD",
+			0,
+			DXGI_FORMAT_R32G32_FLOAT,
+			0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0,
+		},
+		{
+			"BONE_NO",
+			0,
+			DXGI_FORMAT_R16G16_UINT,
+			0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0,
+		},
+		{
+			"BONE_W",
+			0,
+			DXGI_FORMAT_R16_UINT,
+			0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0,
+		},
+		{
+			"EDGE",
+			0,
+			DXGI_FORMAT_R16_UINT,
+			0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0,
+		},
+	};
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
+
+	desc.pRootSignature = m_pDepthPrepassRootSignature;
+
+	// 頂点シェーダー.
+	desc.VS.pShaderBytecode = m_pDepthPrepassVertexShader->GetBufferPointer();
+	desc.VS.BytecodeLength = m_pDepthPrepassVertexShader->GetBufferSize();
+
+	desc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+	desc.RasterizerState.MultisampleEnable = false;
+	desc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+	desc.RasterizerState.DepthClipEnable = true;
+
+	desc.BlendState.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	// 頂点レイアウト.
+	desc.InputLayout.pInputElementDescs = vertexLayout;
+	desc.InputLayout.NumElements = _countof(vertexLayout);
+
+	desc.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
+
+	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+	// RTへの書き込みは不要なので、設定しない.
+	desc.NumRenderTargets = 0;
+	desc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
+
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+
+	desc.DepthStencilState.DepthEnable = true;
+	desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	desc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+
+	HRESULT ret = pDevice->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&m_pDepthPrepassPipelineState));
 	return (ret == S_OK);
 }

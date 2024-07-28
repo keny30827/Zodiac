@@ -8,5 +8,6 @@ void main(
 	uint3 groupThreadId : SV_GroupThreadID
 )
 {
-	rwLightIndices[0] = 0;
+	uint groupIndex = groupThreadId.y * LIGHT_TILE_WIDTH + groupThreadId.x;
+	rwLightIndices[groupIndex] = 0;
 }

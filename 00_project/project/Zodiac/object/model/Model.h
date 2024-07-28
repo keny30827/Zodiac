@@ -42,6 +42,8 @@ public:
 	void Update();
 	virtual void Render(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) override;
 	virtual void RenderShadow(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) override;
+	virtual void RenderDepthPrepass(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) override;
+
 private:
 	void MapVertexData();
 	void MapIndexData();
@@ -324,6 +326,11 @@ private:
 	bool BuildShadowRootSignature(CGraphicsController& graphicsController);
 	bool BuildShadowPipelineState(CGraphicsController& graphicsController);
 
+	// デプスプリパス用.
+	bool BuildDepthPrepassShader(CGraphicsController& graphicsController);
+	bool BuildDepthPrepassRootSignature(CGraphicsController& graphicsController);
+	bool BuildDepthPrepassPipelineState(CGraphicsController& graphicsController);
+
 private:
 	// CPU側で使うモデル情報.
 	std::vector<CVertex> m_vertexList = {};
@@ -352,4 +359,8 @@ private:
 	ID3D12RootSignature* m_pShadowRootSignature = nullptr;
 	ID3DBlob* m_pShadowVertexShader = nullptr;
 	IDepthStencil* m_pDepthStencil = nullptr;
+	// シャドウマップ用.
+	ID3D12PipelineState* m_pDepthPrepassPipelineState = nullptr;
+	ID3D12RootSignature* m_pDepthPrepassRootSignature = nullptr;
+	ID3DBlob* m_pDepthPrepassVertexShader = nullptr;
 };

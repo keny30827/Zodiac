@@ -238,6 +238,8 @@ class IModel {
 public:
 	virtual void Render(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
 	virtual void RenderShadow(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
+	virtual void RenderDepthPrepass(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
+
 public:
 	virtual const IVertex* GetVertexList() const = 0;
 	virtual const IVertex* GetAtVertexList(const uint32_t idx) const = 0;

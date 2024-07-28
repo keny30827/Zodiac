@@ -35,6 +35,19 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 		scissor.right = scissor.left + scDesc.Width;
 	}
 
+	// デプスプリパス.
+	{
+		auto& rt = scene.GetTestRT();
+		if (graphicsController.BeginScene(&rt, &scene.GetDepthPrepass())) {
+			// オブジェクト描画.
+			for (uint32_t n = 0; n < scene.GetModelNum(); n++) {
+				IModel* pModel = const_cast<IModel*>(scene.GetModel(n));
+				pModel->RenderDepthPrepass(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), *(scene.GetMainCamera()), &viewPort, &scissor);
+			}
+			graphicsController.EndScene(&rt, &scene.GetDepthPrepass());
+		}
+	}
+
 	// 一旦影を書いてみる.
 	auto& rt = scene.GetTestRT();
 	if (graphicsController.BeginScene(&rt, &scene.GetShadowMap())) {

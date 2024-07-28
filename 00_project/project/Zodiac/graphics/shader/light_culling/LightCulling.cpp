@@ -225,9 +225,9 @@ void CLightCulling::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& h
 		// 今回の描画におけるルートパラメータとの紐づけ.
 		{
 			// シーン情報.
-			commandWrapper.SetComputeRootDescriptorTable(0, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_uavHeapPosition));
+			commandWrapper.SetComputeRootDescriptorTable(0, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_cbvHeapPosition));
 			// 書き戻し情報.
-			commandWrapper.SetComputeRootDescriptorTable(1, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_cbvHeapPosition));
+			commandWrapper.SetComputeRootDescriptorTable(1, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_uavHeapPosition));
 		}
 	}
 }

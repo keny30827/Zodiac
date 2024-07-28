@@ -9,6 +9,7 @@
 #include "ssao/SSAO.h"
 #include "deferred/DeferredRender.h"
 #include "decal/2DDecal.h"
+#include "light_culling/LightCulling.h"
 
 class CGraphicsController;
 class CShaderManager {
@@ -28,6 +29,7 @@ public:
 	CSSAO* GetSSAOShader() { return &m_ssao; }
 	CDeferredRender* GetDeferredRenderShader() { return &m_deferredRender; }
 	C2DDecalShader* Get2DDecalShader() { return &m_2dDecal; }
+	CLightCulling* GetLightCullingShader() { return &m_lightCulling; }
 
 private:
 	CGaussianBlur m_gaussianBlur;
@@ -37,4 +39,5 @@ private:
 	CSSAO m_ssao;
 	CDeferredRender m_deferredRender;
 	C2DDecalShader m_2dDecal;
+	CLightCulling m_lightCulling;
 };

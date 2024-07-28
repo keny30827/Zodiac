@@ -163,6 +163,7 @@ public: // バリア命令.用途指定などで必要に応じて差し込む必要がある.
 public: // 描画のためのオプション設定.
 	void SetPipelineState(ID3D12PipelineState* p) { m_pCommandList->SetPipelineState(p); }
 	void SetGraphicsRootSignature(ID3D12RootSignature* p) { m_pCommandList->SetGraphicsRootSignature(p); }
+	void SetComputeRootSignature(ID3D12RootSignature* p) { m_pCommandList->SetComputeRootSignature(p); }
 	void SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY e) { m_pCommandList->IASetPrimitiveTopology(e); }
 	void SetVertexBuffers(const D3D12_VERTEX_BUFFER_VIEW* pViews, const UINT viewNum) { m_pCommandList->IASetVertexBuffers(0, viewNum, pViews); }
 	void SetIndexBuffer(const D3D12_INDEX_BUFFER_VIEW* pViews) { m_pCommandList->IASetIndexBuffer(pViews); }
@@ -172,6 +173,7 @@ public: // 描画のためのオプション設定.
 	void SetDescriptorHeaps(ID3D12DescriptorHeap* const* ppHeaps, const UINT NumHeaps) { m_pCommandList->SetDescriptorHeaps(NumHeaps, ppHeaps); }
 	// RootParameterで指定している各レジスタに紐づけるリソースの先頭アドレスを指定.
 	void SetGraphicsRootDescriptorTable(const UINT RootParameterIndex, D3D12_GPU_DESCRIPTOR_HANDLE BaseDescriptor) { m_pCommandList->SetGraphicsRootDescriptorTable(RootParameterIndex, BaseDescriptor); }
+	void SetComputeRootDescriptorTable(const UINT RootParameterIndex, D3D12_GPU_DESCRIPTOR_HANDLE BaseDescriptor) { m_pCommandList->SetComputeRootDescriptorTable(RootParameterIndex, BaseDescriptor); }
 	void SetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* pRTHandles, const UINT NumRT, const D3D12_CPU_DESCRIPTOR_HANDLE* pDSHandles, const BOOL RTsSingleHandleToDescriptorRange)
 	{
 		m_pCommandList->OMSetRenderTargets(NumRT, pRTHandles, RTsSingleHandleToDescriptorRange, pDSHandles);

@@ -16,6 +16,14 @@
 // #define ENABLE_GBUFFER_TEST
 
 // ====================================================.
+// 定数.
+// ====================================================.
+#define LIGHT_MAX (256)
+#define LIGHT_TILE_WIDTH (16)	// 1タイルのpx幅.
+#define LIGHT_TILE_HEIGHT (16)	// 1タイルのpx高さ.
+#define LIGHT_CULLING_INDEX_MAX (300000)	// ライトカリング時のタイルごとの参照インデックスの最大数.
+
+// ====================================================.
 // 便利マクロ.
 // ====================================================.
 
@@ -394,6 +402,22 @@ struct SShaderDecalInfo {
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX proj = DirectX::XMMatrixIdentity();
+};
+
+struct SLightInfo {
+	DirectX::XMFLOAT4 pos = {};
+	DirectX::XMFLOAT4 dir = {};
+	DirectX::XMFLOAT4 color = {};
+	float attenuationDistance = 1.0f;
+	float limitAngle = 3.14f;
+};
+
+struct SShaderLightInfo {
+	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX proj = DirectX::XMMatrixIdentity();
+	SLightInfo light[LIGHT_MAX];
+	int lightNum = 0;
 };
 
 struct SShaderSpriteInfo {

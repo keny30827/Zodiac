@@ -26,6 +26,7 @@ public:
 		if (ret == S_OK) {
 			pBuffer->view = rCamera.GetViewMatrix();
 			pBuffer->proj = rCamera.GetPerspectiveMatrix();
+			pBuffer->projInv = XMMatrixInverse(nullptr, rCamera.GetPerspectiveMatrix());
 			m_cbvResource->Unmap(0, nullptr);
 		}
 	}
@@ -38,6 +39,16 @@ public:
 				pBuffer->light[n] = pInfo[n];
 			}
 			pBuffer->lightNum = infoSize;
+			m_cbvResource->Unmap(0, nullptr);
+		}
+	}
+	void SetScreenParam(const float w, const float h)
+	{
+		SShaderLightInfo* pBuffer = nullptr;
+		HRESULT ret = m_cbvResource->Map(0, nullptr, (void**)(&pBuffer));
+		if (ret == S_OK) {
+			pBuffer->screenParam.x = w;
+			pBuffer->screenParam.y = h;
 			m_cbvResource->Unmap(0, nullptr);
 		}
 	}

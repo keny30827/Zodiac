@@ -418,6 +418,8 @@ struct SShaderLightInfo {
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX proj = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX projInv = DirectX::XMMatrixIdentity();
+	DirectX::XMFLOAT2 screenParam = {};
 	SLightInfo light[LIGHT_MAX];
 	int lightNum = 0;
 };

@@ -335,6 +335,7 @@ void CRenderPassSprite::RenderSsao(CScene& scene, CGraphicsController& graphicsC
 		if (graphicsController.BeginScene(&rt)) {
 			pShader->SetInputDepthRT(&scene.GetDofDepth());
 			pShader->SetInputNormalRT(&scene.GetNormal());
+			pShader->SetCameraInfo(*pCamera);
 			m_postEffectBuffer.SetShader(pShader);
 			m_postEffectBuffer.Render(
 				graphicsController.GetCommandWrapper(),

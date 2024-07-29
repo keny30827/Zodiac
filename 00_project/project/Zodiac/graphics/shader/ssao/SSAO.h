@@ -17,6 +17,18 @@ public:
 public:
 	void SetInputNormalRT(IRenderTarget* pTex) { m_inputNormalRT = pTex; }
 	void SetInputDepthRT(IDepthStencil* pTex) { m_inputDepthRT = pTex; }
+	void SetCameraInfo(const ICamera& rCamera)
+	{
+		m_sceneInfo.eye = rCamera.GetEye();
+		m_sceneInfo.proj = rCamera.GetPerspectiveMatrix();
+		m_sceneInfo.projInv = XMMatrixInverse(nullptr, rCamera.GetPerspectiveMatrix());
+		SShaderSpriteInfo* pBuffer = nullptr;
+		HRESULT ret = m_cbvResource->Map(0, nullptr, (void**)(&pBuffer));
+		if (ret == S_OK) {
+			(*pBuffer) = m_sceneInfo;
+			m_cbvResource->Unmap(0, nullptr);
+		}
+	}
 
 public:
 	ID3D12PipelineState* GetPipelineState() override { return m_pPipelineState; }

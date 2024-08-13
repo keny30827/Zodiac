@@ -53,6 +53,27 @@ bool CApplication::Init(SApplicationOption option)
 		// カメラを合わせるのは下目.
 		focusPos.y += 10.f;
 		m_camera.Update(&focusPos);
+		// ちょっと雑だがライト用意.
+		{
+			m_light[0].pos = DirectX::XMFLOAT4(-5.0f, 5.0f, -5.0f, 1.0f);
+			m_light[0].color = DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f);
+
+			m_light[1].pos = DirectX::XMFLOAT4(-5.0f, 5.0f, 0.0f, 1.0f);
+			m_light[1].color = DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f);
+
+			m_light[2].pos = DirectX::XMFLOAT4(-5.0f, 5.0f, 5.0f, 1.0f);
+			m_light[2].color = DirectX::XMFLOAT4(0.0f, 0.0f, 255.0f, 1.0f);
+
+			m_light[3].pos = DirectX::XMFLOAT4(5.0f, 5.0f, -5.0f, 1.0f);
+			m_light[3].color = DirectX::XMFLOAT4(255.0f, 0.0f, 255.0f, 1.0f);
+
+			m_light[4].pos = DirectX::XMFLOAT4(5.0f, 5.0f, 0.0f, 1.0f);
+			m_light[4].color = DirectX::XMFLOAT4(255.0f, 255.0f, 0.0f, 1.0f);
+
+			for (int n = 0; n < COUNTOF(m_light); n++) {
+				m_light[n].attenuationDistance = 50.0f;
+			}
+		}
 	}
 
 	// コールバック仕込み場.
@@ -151,13 +172,19 @@ void CApplication::UpdateGame()
 		m_player.Update();
 		m_player2.Update();
 		m_camera.Update();
-
+		for (int n = 0; n < COUNTOF(m_light); n++) {
+			const DirectX::XMVECTOR vec = DirectX::XMVector4Transform(DirectX::XMLoadFloat4(&m_light[n].pos), m_camera.GetViewMatrix());
+			DirectX::XMStoreFloat4(&m_light[n].posInView, vec);
+		}
 	}
 
 	// 描画登録.
 	{
 		m_scene.AddModel(&(m_player.GetModel()));
 		m_scene.AddModel(&(m_player2.GetModel()));
+		for (int n = 0; n < COUNTOF(m_light); n++) {
+			m_scene.AddLight(&m_light[n]);
+		}
 		m_scene.SetMainCamera(&m_camera);
 		m_scene.SetFrameBuffer(&m_sprite);
 		m_scene.Set2DDecal(&m_2dDecal);

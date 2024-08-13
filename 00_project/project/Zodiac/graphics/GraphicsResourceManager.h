@@ -40,6 +40,9 @@ public:
 	uint32_t GetSpriteNum() const { return static_cast<uint32_t>(m_spriteList.size()); }
 	const ISprite* GetSprite(const uint32_t idx) const { return m_spriteList[idx]; }
 
+	uint32_t GetLightNum() const { return static_cast<uint32_t>(m_lightList.size()); }
+	const SLightInfo* GetLight(const uint32_t idx) const { return m_lightList[idx]; }
+
 	const ISprite* GetFrameBuffer() const { return m_pFrameBuffer; }
 
 	const ICamera* GetMainCamera() const { return m_pMainCamera; }
@@ -49,14 +52,16 @@ public:
 public:
 	void AddModel(const IModel* pModel) { m_objectList.push_back(pModel); }
 	void AddSprite(const ISprite* pObj) { m_spriteList.push_back(pObj); }
+	void AddLight(const SLightInfo* pObj) { m_lightList.push_back(pObj); }
 	void SetFrameBuffer(const ISprite* pObj) { m_pFrameBuffer = pObj; }
 	void SetMainCamera(const ICamera* pObj) { m_pMainCamera = pObj; }
 	void Set2DDecal(const IDecal* pObj) { m_p2DDecal = pObj; }
 
 public:
-	void ClearAll() { ClearModel(); ClearSprite(); ClearFrameBuffer();  ClearCamera(); }
+	void ClearAll() { ClearModel(); ClearSprite(); ClearLight(); ClearFrameBuffer();  ClearCamera(); }
 	void ClearModel() { m_objectList.clear(); }
 	void ClearSprite() { m_spriteList.clear(); }
+	void ClearLight() { m_lightList.clear(); }
 	void ClearFrameBuffer() { m_pFrameBuffer = nullptr; }
 	void ClearCamera() { m_pMainCamera = nullptr; }
 
@@ -94,6 +99,7 @@ private:
 	// ï`âÊÇ…ïKóvÇ»äOïîÇ©ÇÁÇÃê›íËèÓïÒ.
 	std::vector<const IModel*> m_objectList = {};
 	std::vector<const ISprite*> m_spriteList = {};
+	std::vector<const SLightInfo*> m_lightList = {};
 	const ISprite* m_pFrameBuffer = nullptr;
 	const ICamera* m_pMainCamera = nullptr;
 	const IDecal* m_p2DDecal = nullptr;

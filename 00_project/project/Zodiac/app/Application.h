@@ -77,6 +77,7 @@ private:
 	CCamera m_camera;
 	CSprite m_sprite;
 	C2DDecal m_2dDecal;
+	SLightInfo m_light[5];
 
 #if defined(DEBUG)
 	CDebugManager m_debugManager;

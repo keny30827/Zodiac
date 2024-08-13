@@ -48,6 +48,11 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 		}
 	}
 
+	// ライトカリング.
+	{
+
+	}
+
 	// 一旦影を書いてみる.
 	auto& rt = scene.GetTestRT();
 	if (graphicsController.BeginScene(&rt, &scene.GetShadowMap())) {

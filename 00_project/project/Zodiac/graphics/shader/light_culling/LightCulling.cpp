@@ -244,5 +244,10 @@ void CLightCulling::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& h
 			// 深度値.
 			commandWrapper.SetComputeRootDescriptorTable(2, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputDepthRT->GetSrvHeapPosition()));
 		}
+		// 実行まで行う.
+		commandWrapper.Dispatch(
+			static_cast<UINT>(m_screenParam.x / LIGHT_TILE_WIDTH), 
+			static_cast<UINT>(m_screenParam.y / LIGHT_TILE_HEIGHT),
+			1);
 	}
 }

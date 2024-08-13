@@ -52,6 +52,8 @@ public:
 			pBuffer->screenParam.y = h;
 			m_cbvResource->Unmap(0, nullptr);
 		}
+		m_screenParam.x = w;
+		m_screenParam.y = h;
 	}
 
 private:
@@ -67,4 +69,6 @@ private:
 	int m_cbvHeapPosition = -1;
 
 	IDepthStencil* m_inputDepthRT = nullptr;
+
+	DirectX::XMFLOAT2 m_screenParam = DirectX::XMFLOAT2(0.0f, 0.0f);
 };

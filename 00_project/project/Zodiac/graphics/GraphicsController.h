@@ -122,6 +122,13 @@ public: // •`‰æ–½—ß.
 	{
 		m_pCommandList->DrawIndexedInstanced(IndexCountPerInstance, InstanceCount, StartIndexLocation, BaseVertexLocation, StartInstanceLocation);
 	}
+	void Dispatch(
+		UINT ThreadGroupCountX,
+		UINT ThreadGroupCountY,
+		UINT ThreadGroupCountZ)
+	{
+		m_pCommandList->Dispatch(ThreadGroupCountX, ThreadGroupCountY, ThreadGroupCountZ);
+	}
 
 	void ClearRenderTarget(D3D12_CPU_DESCRIPTOR_HANDLE RTHandle, const FLOAT ColorRGBA[4], const D3D12_RECT* pRects = nullptr, const UINT NumRects = 0)
 	{

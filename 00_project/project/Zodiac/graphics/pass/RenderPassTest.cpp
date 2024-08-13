@@ -50,7 +50,16 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 
 	// ライトカリング.
 	{
-
+		// コマンドリストを使いたいだけなのだが、ひとまず適当なRTへの書き込み扱いにしておく.
+		auto& rt = scene.GetTestRT();
+		if (graphicsController.BeginScene(&rt)) {
+			auto* pShader = shaderMgr.GetLightCullingShader();
+			pShader->SetInputDepthRT(&scene.GetDepthPrepass());
+			pShader->SetScreenParam(static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
+			pShader->SetLightInfo(scene.GetLight(0), scene.GetLightNum());
+			pShader->SetCameraInfo(*scene.GetMainCamera());
+			graphicsController.EndScene(&rt);
+		}
 	}
 
 	// 一旦影を書いてみる.

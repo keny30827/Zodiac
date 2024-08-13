@@ -31,7 +31,7 @@ public:
 			m_cbvResource->Unmap(0, nullptr);
 		}
 	}
-	void SetLightInfo(SLightInfo* pInfo, const int infoSize)
+	void SetLightInfo(const SLightInfo* pInfo, const int infoSize)
 	{
 		SShaderLightInfo* pBuffer = nullptr;
 		HRESULT ret = m_cbvResource->Map(0, nullptr, (void**)(&pBuffer));

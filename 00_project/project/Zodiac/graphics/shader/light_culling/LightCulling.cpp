@@ -138,7 +138,7 @@ void CLightCulling::Init(CGraphicsController& graphicsController)
 	{
 		HRESULT ret = S_FALSE;
 
-		D3D12_DESCRIPTOR_RANGE descRange[2] = {};
+		D3D12_DESCRIPTOR_RANGE descRange[3] = {};
 		{
 			// ライト情報.
 			descRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
@@ -151,10 +151,16 @@ void CLightCulling::Init(CGraphicsController& graphicsController)
 			descRange[1].BaseShaderRegister = 0;
 			descRange[1].NumDescriptors = 1;
 			descRange[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+			// 書き戻し用バッファー.
+			descRange[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+			descRange[2].BaseShaderRegister = 0;
+			descRange[2].NumDescriptors = 1;
+			descRange[2].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 		}
 
 		// ルートパラメータ自体は、ヒープ分用意する.
-		D3D12_ROOT_PARAMETER rootParam[2] = {};
+		D3D12_ROOT_PARAMETER rootParam[3] = {};
 		{
 			rootParam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 			rootParam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -165,6 +171,11 @@ void CLightCulling::Init(CGraphicsController& graphicsController)
 			rootParam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 			rootParam[1].DescriptorTable.pDescriptorRanges = &descRange[1];
 			rootParam[1].DescriptorTable.NumDescriptorRanges = 1;
+
+			rootParam[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+			rootParam[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+			rootParam[2].DescriptorTable.pDescriptorRanges = &descRange[2];
+			rootParam[2].DescriptorTable.NumDescriptorRanges = 1;
 		}
 
 		D3D12_ROOT_SIGNATURE_DESC desc = {};
@@ -212,6 +223,8 @@ void CLightCulling::Update()
 
 void CLightCulling::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper)
 {
+	VRETURN(m_inputDepthRT);
+
 	// コマンドリストへの設定.
 	{
 		// パイプライン設定.
@@ -228,6 +241,8 @@ void CLightCulling::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& h
 			commandWrapper.SetComputeRootDescriptorTable(0, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_cbvHeapPosition));
 			// 書き戻し情報.
 			commandWrapper.SetComputeRootDescriptorTable(1, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_uavHeapPosition));
+			// 深度値.
+			commandWrapper.SetComputeRootDescriptorTable(2, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputDepthRT->GetSrvHeapPosition()));
 		}
 	}
 }

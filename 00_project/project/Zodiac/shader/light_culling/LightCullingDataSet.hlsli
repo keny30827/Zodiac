@@ -2,10 +2,12 @@
 #define LIGHT_MAX (256)
 #define LIGHT_TILE_WIDTH (16)
 #define LIGHT_TILE_HEIGHT (16)
+#define LIGHT_TILE_SIZE (LIGHT_TILE_WIDTH * LIGHT_TILE_HEIGHT)
 #define LIGHT_CULLING_INDEX_MAX (300000)
 
 struct SLightInfo {
 	float4 pos;
+	float4 posInView;
 	float4 dir;
 	float4 color;
 	float attenuationDistance;
@@ -19,7 +21,7 @@ cbuffer cbuff0 : register(b0) {
 	matrix projInv;
 	float2 screenParam;
 	SLightInfo light[LIGHT_MAX];
-	int lightNum;
+	uint lightNum;
 };
 
 // ê[ìx.

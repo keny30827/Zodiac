@@ -408,6 +408,7 @@ struct SShaderDecalInfo {
 
 struct SLightInfo {
 	DirectX::XMFLOAT4 pos = {};
+	DirectX::XMFLOAT4 posInView = {};
 	DirectX::XMFLOAT4 dir = {};
 	DirectX::XMFLOAT4 color = {};
 	float attenuationDistance = 1.0f;

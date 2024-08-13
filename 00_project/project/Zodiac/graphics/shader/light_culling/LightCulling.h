@@ -19,6 +19,7 @@ public:
 	ID3D12RootSignature* GetRootSignature() override { return m_pRootSignature; }
 
 public:
+	void SetInputDepthRT(IDepthStencil* pTex) { m_inputDepthRT = pTex; }
 	void SetCameraInfo(const ICamera& rCamera)
 	{
 		SShaderLightInfo* pBuffer = nullptr;
@@ -64,4 +65,6 @@ private:
 
 	ID3D12Resource* m_cbvResource = nullptr;
 	int m_cbvHeapPosition = -1;
+
+	IDepthStencil* m_inputDepthRT = nullptr;
 };

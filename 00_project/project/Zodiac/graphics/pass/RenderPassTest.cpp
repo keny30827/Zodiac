@@ -58,7 +58,12 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 			pShader->SetScreenParam(static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
 			pShader->SetLightInfo(scene.GetLight(0), scene.GetLightNum());
 			pShader->SetCameraInfo(*scene.GetMainCamera());
+			pShader->RenderSetup(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper());
 			graphicsController.EndScene(&rt);
+		}
+
+		if (auto* pShader = shaderMgr.GetLightCullingShader()) {
+			pShader->DB_DispLightInfo();
 		}
 	}
 

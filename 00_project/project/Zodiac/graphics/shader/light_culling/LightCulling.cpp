@@ -214,6 +214,7 @@ void CLightCulling::Term()
 	SAEF_RELEASE(m_pPipelineState);
 	SAEF_RELEASE(m_pRootSignature);
 	SAEF_RELEASE(m_pComputeShader);
+	SAEF_RELEASE(m_cbvResource);
 	SAEF_RELEASE(m_uavResource);
 }
 
@@ -251,3 +252,38 @@ void CLightCulling::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& h
 			1);
 	}
 }
+
+#if defined(DEBUG)
+void CLightCulling::DB_DispLightInfo()
+{
+	int lightNum = 0;
+	{
+		SShaderLightInfo* pBuffer = nullptr;
+		HRESULT ret = m_cbvResource->Map(0, nullptr, (void**)(&pBuffer));
+		if (ret == S_OK) {
+			lightNum = pBuffer->lightNum;
+			m_cbvResource->Unmap(0, nullptr);
+		}
+	}
+
+	{
+		uint32_t* pBuffer = nullptr;
+		HRESULT ret = m_uavResource->Map(0, nullptr, (void**)(&pBuffer));
+		if (ret == S_OK) {
+			const uint32_t tileW = static_cast<UINT>(m_screenParam.x / LIGHT_TILE_WIDTH);
+			const uint32_t tileH = static_cast<UINT>(m_screenParam.y / LIGHT_TILE_HEIGHT);
+			for (uint32_t x = 0; x < tileW; x++) {
+				for (uint32_t y = 0; y < tileH; y++) {
+					const int index = y * tileW + x;
+					printf("[tileID = %d]", index);
+					for (int n = 0; n < lightNum; n++) {
+						printf("%d,", pBuffer[index * lightNum + n]);
+					}
+					printf("\n");
+				}
+			}
+			m_uavResource->Unmap(0, nullptr);
+		}
+	}
+}
+#endif

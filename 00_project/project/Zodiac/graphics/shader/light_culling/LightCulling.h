@@ -56,6 +56,11 @@ public:
 		m_screenParam.y = h;
 	}
 
+#if defined(DEBUG)
+public:
+	void DB_DispLightInfo();
+#endif
+
 private:
 	ID3D12PipelineState* m_pPipelineState = nullptr;
 	ID3D12RootSignature* m_pRootSignature = nullptr;

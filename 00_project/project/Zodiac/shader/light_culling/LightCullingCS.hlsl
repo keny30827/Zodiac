@@ -82,7 +82,7 @@ void main(
     float3 posInView = ComputePositionInCamera(frameUV);
 
     // 同期.
-    // GroupMemoryBarrierWithGroupSync();
+    GroupMemoryBarrierWithGroupSync();
 
     // タイルの最大・最小深度を求める.
     // この処理は並列するスレッド全てで排他的に処理される.
@@ -97,6 +97,8 @@ void main(
     GetTileFrustumPlane(frustumPlanes, groupId);
 
     // タイルとポイントライトの衝突判定.
+    // LIGHT_TILE_SIZE分を1タイルとして並列で動かしていて、タイル単位での採用ライトを決めているので、.
+    // うまく処理が分散されるように開始位置はグループ内のID、そこからLIGHT_TILE_SIZEずつ飛ばす形にしている.
     for (uint lightIndex = groupIndex; lightIndex < lightNum; lightIndex += LIGHT_TILE_SIZE) {
         SLightInfo lightInfo = light[lightIndex];
 
@@ -124,16 +126,24 @@ void main(
     // ここで同期を取ると、sTileLightIndicesにタイルと衝突しているライトのインデックスが積まれている
     GroupMemoryBarrierWithGroupSync();
 
-    // ライトインデックスを出力バッファに出力
-    uint numCellX = (screenParam.x + LIGHT_TILE_WIDTH - 1) / LIGHT_TILE_WIDTH;
-    uint tileIndex = floor(frameUV.x / LIGHT_TILE_WIDTH) + floor(frameUV.y / LIGHT_TILE_WIDTH) * numCellX;
-    uint lightStart = lightNum * tileIndex;
-    for (uint lightIndex = groupIndex; lightIndex < sTileNumLights; lightIndex += LIGHT_TILE_SIZE) {
-        rwLightIndices[lightStart + lightIndex] = sTileLightIndices[lightIndex];
-    }
+    // ライトインデックスを出力バッファに出力.
+    {
+        // 画面全体でのタイル数（横）.
+        uint numCellX = (screenParam.x + LIGHT_TILE_WIDTH - 1) / LIGHT_TILE_WIDTH;
+        // 今のスレッドの画素位置からタイル座標を割り出した上での通し番号.
+        uint tileIndex = floor(frameUV.x / LIGHT_TILE_WIDTH) + floor(frameUV.y / LIGHT_TILE_WIDTH) * numCellX;
+        // １タイルあたりの配列数は最大数がライト数なので、ヒットしているしていないに関係なくバッファとしてはライト数を確保しておく.
+        // で、タイルID順に格納しておく.
+        uint lightStart = lightNum * tileIndex;
+        for (uint lightIndex = groupIndex; lightIndex < sTileNumLights; lightIndex += LIGHT_TILE_SIZE) {
+            rwLightIndices[lightStart + lightIndex] = sTileLightIndices[lightIndex];
+        }
 
-    if ((groupIndex == 0) && (sTileNumLights < lightNum)) {
-        //-1で番兵。
-        rwLightIndices[lightStart + sTileNumLights] = 0xffffffff;
+        // この時点でsTileNumLightsなどの共有変数の同期は取られているので、最後に終了の印を入れる.
+        // タイルごとに先頭スレッドだけで行われる.
+        if ((groupIndex == 0) && (sTileNumLights < lightNum)) {
+            //-1で番兵。
+            rwLightIndices[lightStart + sTileNumLights] = 0xffffffff;
+        }
     }
 }

@@ -12,6 +12,7 @@ struct SLightInfo {
 	float4 color;
 	float attenuationDistance;
 	float limitAngle;
+	float2 padding_;
 };
 
 cbuffer cbuff0 : register(b0) {
@@ -20,6 +21,7 @@ cbuffer cbuff0 : register(b0) {
 	matrix proj;
 	matrix projInv;
 	float2 screenParam;
+	float2 padding;
 	SLightInfo light[LIGHT_MAX];
 	uint lightNum;
 };

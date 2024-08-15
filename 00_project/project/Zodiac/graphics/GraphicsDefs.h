@@ -413,6 +413,7 @@ struct SLightInfo {
 	DirectX::XMFLOAT4 color = {};
 	float attenuationDistance = 1.0f;
 	float limitAngle = 3.14f;
+	float padding[2] = {};
 };
 
 struct SShaderLightInfo {
@@ -421,6 +422,7 @@ struct SShaderLightInfo {
 	DirectX::XMMATRIX proj = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX projInv = DirectX::XMMatrixIdentity();
 	DirectX::XMFLOAT2 screenParam = {};
+	float padding[2] = {};
 	SLightInfo light[LIGHT_MAX];
 	int lightNum = 0;
 };

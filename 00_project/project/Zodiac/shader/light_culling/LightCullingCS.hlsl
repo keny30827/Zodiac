@@ -131,7 +131,7 @@ void main(
         // 画面全体でのタイル数（横）.
         uint numCellX = (screenParam.x + LIGHT_TILE_WIDTH - 1) / LIGHT_TILE_WIDTH;
         // 今のスレッドの画素位置からタイル座標を割り出した上での通し番号.
-        uint tileIndex = floor(frameUV.x / LIGHT_TILE_WIDTH) + floor(frameUV.y / LIGHT_TILE_WIDTH) * numCellX;
+        uint tileIndex = floor(frameUV.x / LIGHT_TILE_WIDTH) + floor(frameUV.y / LIGHT_TILE_HEIGHT) * numCellX;
         // １タイルあたりの配列数は最大数がライト数なので、ヒットしているしていないに関係なくバッファとしてはライト数を確保しておく.
         // で、タイルID順に格納しておく.
         uint lightStart = lightNum * tileIndex;

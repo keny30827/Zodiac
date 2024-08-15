@@ -61,10 +61,11 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 			pShader->RenderSetup(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper());
 			graphicsController.EndScene(&rt);
 		}
-
+#if 0
 		if (auto* pShader = shaderMgr.GetLightCullingShader()) {
 			pShader->DB_DispLightInfo();
 		}
+#endif
 	}
 
 	// ˆê’U‰e‚ğ‘‚¢‚Ä‚İ‚é.

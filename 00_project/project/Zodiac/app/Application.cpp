@@ -56,22 +56,22 @@ bool CApplication::Init(SApplicationOption option)
 		// ‚¿‚å‚Á‚ÆŽG‚¾‚ªƒ‰ƒCƒg—pˆÓ.
 		{
 			m_light[0].pos = DirectX::XMFLOAT4(-5.0f, 5.0f, -5.0f, 1.0f);
-			m_light[0].color = DirectX::XMFLOAT4(255.0f, 0.0f, 0.0f, 1.0f);
+			m_light[0].color = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
 			m_light[1].pos = DirectX::XMFLOAT4(-5.0f, 5.0f, 0.0f, 1.0f);
-			m_light[1].color = DirectX::XMFLOAT4(0.0f, 255.0f, 0.0f, 1.0f);
+			m_light[1].color = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
 			m_light[2].pos = DirectX::XMFLOAT4(-5.0f, 5.0f, 5.0f, 1.0f);
-			m_light[2].color = DirectX::XMFLOAT4(0.0f, 0.0f, 255.0f, 1.0f);
+			m_light[2].color = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
 			m_light[3].pos = DirectX::XMFLOAT4(5.0f, 5.0f, -5.0f, 1.0f);
-			m_light[3].color = DirectX::XMFLOAT4(255.0f, 0.0f, 255.0f, 1.0f);
+			m_light[3].color = DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
 			m_light[4].pos = DirectX::XMFLOAT4(5.0f, 5.0f, 0.0f, 1.0f);
-			m_light[4].color = DirectX::XMFLOAT4(255.0f, 255.0f, 0.0f, 1.0f);
+			m_light[4].color = DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
 			for (int n = 0; n < COUNTOF(m_light); n++) {
-				m_light[n].attenuationDistance = 50.0f;
+				m_light[n].attenuationDistance = 20.0f;
 			}
 		}
 	}

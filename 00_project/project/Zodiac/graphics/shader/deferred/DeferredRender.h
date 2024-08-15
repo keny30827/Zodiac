@@ -21,6 +21,8 @@ public:
 	void SetInputGBufferObjectInfo(IRenderTarget* pTex) { m_inputGBufferObjectInfo = pTex; }
 	void SetInputGBufferSpecular(IRenderTarget* pTex) { m_inputGBufferSpecular = pTex; }
 	void SetInputGBufferWorldPos(IRenderTarget* pTex) { m_inputGBufferWorldPos = pTex; }
+	void SetInputTileLight(int index) { m_tileLightHeapPosition = index; }
+	
 
 	// TODO ‚Æ‚è‚ ‚¦‚¸.
 	void SetInputEye(const DirectX::XMFLOAT3& eye) 
@@ -30,6 +32,29 @@ public:
 		HRESULT ret = m_cbvResource->Map(0, nullptr, (void**)(&pBuffer));
 		if (ret == S_OK) {
 			(*pBuffer) = m_sceneInfo;
+			m_cbvResource->Unmap(0, nullptr);
+		}
+	}
+
+	void SetLightInfo(const SLightInfo* pInfo, const int infoSize)
+	{
+		SShaderSpriteInfo* pBuffer = nullptr;
+		HRESULT ret = m_cbvResource->Map(0, nullptr, (void**)(&pBuffer));
+		if (ret == S_OK) {
+			for (int n = 0; n < infoSize; n++) {
+				pBuffer->light[n] = pInfo[n];
+			}
+			pBuffer->lightNum = infoSize;
+			m_cbvResource->Unmap(0, nullptr);
+		}
+	}
+	void SetScreenParam(const float w, const float h)
+	{
+		SShaderSpriteInfo* pBuffer = nullptr;
+		HRESULT ret = m_cbvResource->Map(0, nullptr, (void**)(&pBuffer));
+		if (ret == S_OK) {
+			pBuffer->screenParam.x = w;
+			pBuffer->screenParam.y = h;
 			m_cbvResource->Unmap(0, nullptr);
 		}
 	}
@@ -59,4 +84,7 @@ private:
 	IRenderTarget* m_inputGBufferObjectInfo = nullptr;
 	IRenderTarget* m_inputGBufferSpecular = nullptr;
 	IRenderTarget* m_inputGBufferWorldPos = nullptr;
+
+	// ƒ‰ƒCƒgî•ñ.
+	int m_tileLightHeapPosition = -1;
 };

@@ -17,6 +17,7 @@ public:
 public:
 	ID3D12PipelineState* GetPipelineState() override { return m_pPipelineState; }
 	ID3D12RootSignature* GetRootSignature() override { return m_pRootSignature; }
+	int GetTileLightHeapPosition() const { return m_uavHeapPosition; }
 
 public:
 	void SetInputDepthRT(IDepthStencil* pTex) { m_inputDepthRT = pTex; }

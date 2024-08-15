@@ -99,7 +99,7 @@ void CDeferredRender::Init(CGraphicsController& graphicsController)
 	{
 		HRESULT ret = S_FALSE;
 
-		D3D12_DESCRIPTOR_RANGE descRange[7] = {};
+		D3D12_DESCRIPTOR_RANGE descRange[8] = {};
 		{
 			// 座標変換行列.
 			descRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
@@ -142,10 +142,16 @@ void CDeferredRender::Init(CGraphicsController& graphicsController)
 			descRange[6].BaseShaderRegister = 5;
 			descRange[6].NumDescriptors = 1;
 			descRange[6].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+			// タイルライト.
+			descRange[7].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+			descRange[7].BaseShaderRegister = 1;
+			descRange[7].NumDescriptors = 1;
+			descRange[7].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 		}
 
 		// ルートパラメータ自体は、ヒープ分用意する.
-		D3D12_ROOT_PARAMETER rootParam[7] = {};
+		D3D12_ROOT_PARAMETER rootParam[8] = {};
 		{
 			rootParam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 			rootParam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
@@ -181,6 +187,11 @@ void CDeferredRender::Init(CGraphicsController& graphicsController)
 			rootParam[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 			rootParam[6].DescriptorTable.pDescriptorRanges = &descRange[6];
 			rootParam[6].DescriptorTable.NumDescriptorRanges = 1;
+
+			rootParam[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+			rootParam[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+			rootParam[7].DescriptorTable.pDescriptorRanges = &descRange[7];
+			rootParam[7].DescriptorTable.NumDescriptorRanges = 1;
 		}
 
 		D3D12_STATIC_SAMPLER_DESC samplerDesc[1] = {};
@@ -348,6 +359,8 @@ void CDeferredRender::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper&
 			commandWrapper.SetGraphicsRootDescriptorTable(5, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputGBufferSpecular->GetSrvHeapPosition()));
 			// ワールド位置.
 			commandWrapper.SetGraphicsRootDescriptorTable(6, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputGBufferWorldPos->GetSrvHeapPosition()));
+			// タイルライト情報.
+			commandWrapper.SetGraphicsRootDescriptorTable(7, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_tileLightHeapPosition));
 		}
 	}
 }

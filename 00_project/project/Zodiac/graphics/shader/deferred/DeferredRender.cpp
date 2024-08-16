@@ -99,7 +99,7 @@ void CDeferredRender::Init(CGraphicsController& graphicsController)
 	{
 		HRESULT ret = S_FALSE;
 
-		D3D12_DESCRIPTOR_RANGE descRange[8] = {};
+		D3D12_DESCRIPTOR_RANGE descRange[9] = {};
 		{
 			// 座標変換行列.
 			descRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
@@ -148,50 +148,23 @@ void CDeferredRender::Init(CGraphicsController& graphicsController)
 			descRange[7].BaseShaderRegister = 1;
 			descRange[7].NumDescriptors = 1;
 			descRange[7].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+			// 深度.
+			descRange[8].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+			descRange[8].BaseShaderRegister = 6;
+			descRange[8].NumDescriptors = 1;
+			descRange[8].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 		}
 
 		// ルートパラメータ自体は、ヒープ分用意する.
-		D3D12_ROOT_PARAMETER rootParam[8] = {};
+		D3D12_ROOT_PARAMETER rootParam[9] = {};
 		{
-			rootParam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-			rootParam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-			rootParam[0].DescriptorTable.pDescriptorRanges = &descRange[0];
-			rootParam[0].DescriptorTable.NumDescriptorRanges = 1;
-
-			rootParam[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-			rootParam[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-			rootParam[1].DescriptorTable.pDescriptorRanges = &descRange[1];
-			rootParam[1].DescriptorTable.NumDescriptorRanges = 1;
-
-			rootParam[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-			rootParam[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-			rootParam[2].DescriptorTable.pDescriptorRanges = &descRange[2];
-			rootParam[2].DescriptorTable.NumDescriptorRanges = 1;
-
-			rootParam[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-			rootParam[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-			rootParam[3].DescriptorTable.pDescriptorRanges = &descRange[3];
-			rootParam[3].DescriptorTable.NumDescriptorRanges = 1;
-
-			rootParam[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-			rootParam[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-			rootParam[4].DescriptorTable.pDescriptorRanges = &descRange[4];
-			rootParam[4].DescriptorTable.NumDescriptorRanges = 1;
-
-			rootParam[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-			rootParam[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-			rootParam[5].DescriptorTable.pDescriptorRanges = &descRange[5];
-			rootParam[5].DescriptorTable.NumDescriptorRanges = 1;
-
-			rootParam[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-			rootParam[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-			rootParam[6].DescriptorTable.pDescriptorRanges = &descRange[6];
-			rootParam[6].DescriptorTable.NumDescriptorRanges = 1;
-
-			rootParam[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-			rootParam[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-			rootParam[7].DescriptorTable.pDescriptorRanges = &descRange[7];
-			rootParam[7].DescriptorTable.NumDescriptorRanges = 1;
+			for (int n = 0; n < COUNTOF(rootParam); n++) {
+				rootParam[n].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+				rootParam[n].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+				rootParam[n].DescriptorTable.pDescriptorRanges = &descRange[n];
+				rootParam[n].DescriptorTable.NumDescriptorRanges = 1;
+			}
 		}
 
 		D3D12_STATIC_SAMPLER_DESC samplerDesc[1] = {};
@@ -332,6 +305,7 @@ void CDeferredRender::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper&
 	VRETURN(m_inputGBufferSSAO);
 	VRETURN(m_inputGBufferObjectInfo);
 	VRETURN(m_inputGBufferWorldPos);
+	VRETURN(m_inputGBufferDepth);
 
 	// コマンドリストへの設定.
 	{
@@ -361,6 +335,8 @@ void CDeferredRender::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper&
 			commandWrapper.SetGraphicsRootDescriptorTable(6, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputGBufferWorldPos->GetSrvHeapPosition()));
 			// タイルライト情報.
 			commandWrapper.SetGraphicsRootDescriptorTable(7, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_tileLightHeapPosition));
+			// 深度.
+			commandWrapper.SetGraphicsRootDescriptorTable(8, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputGBufferDepth->GetSrvHeapPosition()));
 		}
 	}
 }

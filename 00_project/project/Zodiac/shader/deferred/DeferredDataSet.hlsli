@@ -22,6 +22,7 @@ cbuffer cbuff0 : register(b0) {
 	matrix toScreen;
 	matrix proj;
 	matrix projInv;
+	matrix viewInv;
 	float4 eye;
 	float4 screenParam;
 	SLightInfo light[LIGHT_MAX];
@@ -34,6 +35,7 @@ Texture2D<float4> psGBufSSAO : register(t2);
 Texture2D<float4> psGBufObjectInfo : register(t3);
 Texture2D<float4> psGBufSpecular : register(t4);
 Texture2D<float4> psGBufWorldPos : register(t5);
+Texture2D<float> psGBufDepth : register(t6);
 
 SamplerState psSamp : register(s0);
 

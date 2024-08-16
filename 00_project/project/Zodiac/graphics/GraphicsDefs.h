@@ -431,6 +431,7 @@ struct SShaderSpriteInfo {
 	DirectX::XMMATRIX toScreen = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX proj = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX projInv = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX viewInv = DirectX::XMMatrixIdentity();
 	DirectX::XMFLOAT3 eye = {};
 	float padding_ = 0.0f;
 	DirectX::XMFLOAT2 screenParam = {};

@@ -158,7 +158,8 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 			pDeferredShader->SetInputGBufferObjectInfo(&scene.GetObjectInfo());
 			pDeferredShader->SetInputGBufferSpecular(&scene.GetSpecular());
 			pDeferredShader->SetInputGBufferWorldPos(&scene.GetWorldPos());
-			pDeferredShader->SetInputEye(scene.GetMainCamera()->GetEye());
+			pDeferredShader->SetInputGBufferDepth(&scene.GetDepthPrepass());
+			pDeferredShader->SetInputCamera(*scene.GetMainCamera());
 			if (auto* pLightCullingShader = shaderMgr.GetLightCullingShader()) {
 				pDeferredShader->SetInputTileLight(pLightCullingShader->GetTileLightHeapPosition());
 			}

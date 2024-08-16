@@ -64,6 +64,18 @@ void CDebugManager::UpdateGUI(CApplication& app)
 				}
 			}
 		}
+		if (ImGui::CollapsingHeader(u8"player")) {
+			{
+				bool isInput = false;
+				DirectX::XMFLOAT3 pos = app.GetPlayer().GetPos();
+				isInput |= ImGui::InputFloat(u8"player x", &pos.x, 1.0f, 10.0f);
+				isInput |= ImGui::InputFloat(u8"player y", &pos.y, 1.0f, 10.0f);
+				isInput |= ImGui::InputFloat(u8"player z", &pos.z, 1.0f, 10.0f);
+				if (isInput) {
+					app.GetPlayer().OnDebugInputPos(pos);
+				}
+			}
+		}
 	}
 	ImGui::End();
 }

@@ -152,7 +152,7 @@ void CLightCulling::Init(CGraphicsController& graphicsController)
 			descRange[1].NumDescriptors = 1;
 			descRange[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-			// 書き戻し用バッファー.
+			// 深度.
 			descRange[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 			descRange[2].BaseShaderRegister = 0;
 			descRange[2].NumDescriptors = 1;
@@ -247,8 +247,8 @@ void CLightCulling::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& h
 		}
 		// 実行まで行う.
 		commandWrapper.Dispatch(
-			static_cast<UINT>(m_screenParam.x / LIGHT_TILE_WIDTH), 
-			static_cast<UINT>(m_screenParam.y / LIGHT_TILE_HEIGHT),
+			static_cast<UINT>(m_screenParam.x / static_cast<float>(LIGHT_TILE_WIDTH)), 
+			static_cast<UINT>(m_screenParam.y / static_cast<float>(LIGHT_TILE_HEIGHT)),
 			1);
 	}
 }

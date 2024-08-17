@@ -1,5 +1,17 @@
 #include "LightCullingDataSet.hlsli"
 
+// カメラ空間での座標を計算する.
+float3 ComputePositionInCamera(uint2 globalCoords, bool isFront)
+{
+    float2 st = ((float2)globalCoords + 0.5) * rcp(screenParam.xy);
+    st = st * 2.0f - 1.0f;
+    float3 screenPos;
+    screenPos.xy = st.xy;
+    screenPos.z = (isFront) ? 0.0f : depthTex.Load(uint3(globalCoords, 0.0f));
+    float4 cameraPos = mul(projInv, float4(screenPos, 1.0f));
+    return cameraPos.xyz / cameraPos.w;
+}
+
 // タイルごとのフラスタムを取得する.
 // Intelのサンプル「Deferred Rendering for Current and Future Rendering Pipelines」.
 void GetTileFrustumPlane(out float4 frustumPlanes[6], uint3 groupId)
@@ -14,8 +26,8 @@ void GetTileFrustumPlane(out float4 frustumPlanes[6], uint3 groupId)
 
     // groupIdは、screenParam / (LIGHT_TILE_WIDTH, LIGHT_TILE_HEIGHT)で求められた範囲になっている.
     // なので、tileScaleが中点となるような範囲になっている（例：tileScaleが50ならgroupIdの最大は100）.
-    // つまり、groupIdを0 ~ MAXまで回した場合、tileBiasはtileScale ~ -tileScaleまでをとる.
-    float2 tileBias = tileScale - float2(groupId.xy);
+    // つまり、groupIdを0 ~ MAXまで回した場合、tileBiasは-tileScale ~ tileScaleまでをとる.
+    float2 tileBias = -(tileScale - float2(groupId.xy));
 
     // c1はフラスタムの左面の法線.[-tileBias.x, 0, proj._11 * tileScale.x]を90度回転させた形になっている.
     // proj._11は1/tan(2/fovX)みたいな数値.おそらくだが、ビュー空間で分割を行った際の角度に合わせた形状のゆがみを吸収するための指定.
@@ -34,29 +46,58 @@ void GetTileFrustumPlane(out float4 frustumPlanes[6], uint3 groupId)
     frustumPlanes[1] = c1; // 左面.
     frustumPlanes[2] = c4 - c2; // 下面.
     frustumPlanes[3] = c2; // 上面.
-    // 平面と点の距離の計算で使うために、d成分としてz位置を渡している.
-    frustumPlanes[4] = float4(0.0, 0.0, 1.0, -minTileZ);
-    frustumPlanes[5] = float4(0.0, 0.0, -1.0, maxTileZ);
+    frustumPlanes[4] = float4(0.0, 0.0, 1.0, 0.0f);
+    frustumPlanes[5] = float4(0.0, 0.0, -1.0, 0.0f);
 
     // 法線が正規化されていない4面についてだけ正規化する
     [unroll]
     for (uint i = 0; i < 4; ++i) {
         frustumPlanes[i] *= rcp(length(frustumPlanes[i].xyz));
     }
-}
 
-/*!
- * @brief カメラ空間での座標を計算する。
- */
-float3 ComputePositionInCamera(uint2 globalCoords)
-{
-    float2 st = ((float2)globalCoords + 0.5) * rcp(screenParam.xy);
-    st = st * float2(2.0, -2.0) - float2(1.0, -1.0);
-    float3 screenPos;
-    screenPos.xy = st.xy;
-    screenPos.z = depthTex.Load(uint3(globalCoords, 0.0f));
-    float4 cameraPos = mul(projInv, float4(screenPos, 1.0f));
-    return cameraPos.xyz / cameraPos.w;
+#if 1
+    // ★★★ 計算しなくても結果は変わらないのだが、どうしても気持ち悪いので面位置も計算する.
+    // ax + by + cz = -d のd.-n.p.
+    // 正負どちらの向きであっても、一定値以上かどうかで判定をしたいので、.
+    // 法線が正ならdを負に、負ならdを正にする形で調整してる.
+    // a(x - x0) + b(y - y0) + c(z - z0) = 0. という計算になるように、ライトと面の当たり判定取るところで差分をとっても良い.
+
+    // 面位置も計算する.
+    {
+        // スクリーン座標で面位置のXYを決めたうえで、ビュー座標に変換してからZ方向に押し出す.
+        float2 baseScreenPos = float2(groupId.x * LIGHT_TILE_WIDTH, groupId.y * LIGHT_TILE_HEIGHT);
+        float z = (maxTileZ + minTileZ) * 0.5f;
+        float3 ofsZ = float3(0.0f, 0.0f, minTileZ);
+        // 右.
+        {
+            float2 screenPos = baseScreenPos + float2(LIGHT_TILE_WIDTH, float(LIGHT_TILE_HEIGHT) * 0.5f);
+            float3 viewFrontPos = ComputePositionInCamera(screenPos, true);
+            frustumPlanes[0].w = dot(frustumPlanes[0].xyz, viewFrontPos + ofsZ);
+        }
+        // 左.
+        {
+            float2 screenPos = baseScreenPos + float2(0.0f, float(LIGHT_TILE_HEIGHT) * 0.5f);
+            float3 viewFrontPos = ComputePositionInCamera(screenPos, true);
+            frustumPlanes[1].w = -dot(frustumPlanes[1].xyz, viewFrontPos + ofsZ);
+        }
+        // 下.
+        {
+            float2 screenPos = baseScreenPos + float2(float(LIGHT_TILE_WIDTH) * 0.5f, LIGHT_TILE_HEIGHT);
+            float3 viewFrontPos = ComputePositionInCamera(screenPos, true);
+            frustumPlanes[2].w = -dot(frustumPlanes[2].xyz, viewFrontPos + ofsZ);
+        }
+        // 上.
+        {
+            float2 screenPos = baseScreenPos + float2(float(LIGHT_TILE_WIDTH) * 0.5f, 0.0f);
+            float3 viewFrontPos = ComputePositionInCamera(screenPos, true);
+            frustumPlanes[3].w = dot(frustumPlanes[3].xyz, viewFrontPos + ofsZ);
+        }
+        // 遠近.
+        // 平面と点の距離の計算で使うために、d成分としてz位置を渡している.
+        frustumPlanes[4].w = -minTileZ;
+        frustumPlanes[5].w = maxTileZ;
+    }
+#endif
 }
 
 [numthreads(LIGHT_TILE_WIDTH, LIGHT_TILE_HEIGHT, 1)]
@@ -79,10 +120,10 @@ void main(
     uint2 frameUV = dispatchThreadId.xy;
 
     //ビュー空間での座標を計算する.
-    float3 posInView = ComputePositionInCamera(frameUV);
+    float3 posInView = ComputePositionInCamera(frameUV, false);
 
     // 同期.
-    GroupMemoryBarrierWithGroupSync();
+    // GroupMemoryBarrierWithGroupSync();
 
     // タイルの最大・最小深度を求める.
     // この処理は並列するスレッド全てで排他的に処理される.

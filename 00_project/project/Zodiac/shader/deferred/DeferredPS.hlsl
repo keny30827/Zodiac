@@ -15,6 +15,8 @@ float4 main(OutputVSPS input) : SV_TARGET
 	float depth = psGBufDepth.Sample(psSamp, input.uv);
 
 	// ワールド位置計算.
+	// TODO GBufferに入れてるワールド位置がバグっている.多分、格納する時点で変な補間かかっちゃってるっぽい.
+	// 復元した方が正しく計算されるので、ひとまずこちらを使う.
 	//float4 worldPos = psGBufWorldPos.Sample(psSamp, input.uv);
 	float4 worldPos = float4(input.uv * 2.0f - 1.0f, depth, 1.0f);
 	{
@@ -26,10 +28,10 @@ float4 main(OutputVSPS input) : SV_TARGET
 	float4 ray = float4(normalize(worldPos.xyz - eye.xyz), 1.0f);
 
 	// タイル位置の計算.
-	const int tileX = floor(input.pos.x / LIGHT_TILE_WIDTH);
-	const int tileY = floor(input.pos.y / LIGHT_TILE_HEIGHT);
+	const int tileX = floor((screenParam.x * input.uv.x) / LIGHT_TILE_WIDTH);
+	const int tileY = floor((screenParam.y * input.uv.y) / LIGHT_TILE_HEIGHT);
 	const int tileW = int((screenParam.x + LIGHT_TILE_WIDTH - 1) / LIGHT_TILE_WIDTH);
-	const int tileIndex = (tileY * tileW) + tileX;
+	const int tileIndex = ((tileY * tileW) + tileX) * lightNum;
 
 	// 平行光源.
 	//float4 lightPos = float4(-1.0f, 1.0f, -1.0f, 0.0f);
@@ -39,7 +41,7 @@ float4 main(OutputVSPS input) : SV_TARGET
 	// ヒットしているライトの分だけ計算する.
 	float4 resultColor = float4(0.0f, 0.0f, 0.0f, 1.0f);
 	for (uint n = 0; n < lightNum; n++) {
-		const int lightIndex = n;// int(rwLightIndices[tileIndex + n]);
+		const int lightIndex = int(rwLightIndices[tileIndex + n]);
 		if (lightIndex < 0) {
 			break;
 		}
@@ -67,7 +69,6 @@ float4 main(OutputVSPS input) : SV_TARGET
 	resultColor /= lightNum;
 
 	// SSAOの結果も入れる.
-	//float4 ssao = psGBufSSAO.Sample(psSamp, input.uv);
-
-	return resultColor;//* ssao;
+	float4 ssao = psGBufSSAO.Sample(psSamp, input.uv);
+	return resultColor * ssao;
 }

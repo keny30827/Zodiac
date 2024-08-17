@@ -16,6 +16,7 @@ public:
 
 public:
 	void SetInputBaseRT(IRenderTarget* pTex) { m_inputBaseRT = pTex; }
+	void SetInputBaseDS(IDepthStencil* pTex) { m_inputBaseDS = pTex; }
 
 public:
 	ID3D12PipelineState* GetPipelineState() override { return m_pPipelineState; }
@@ -37,4 +38,5 @@ private:
 
 	// “ü—Í‰æ‘œ.
 	IRenderTarget* m_inputBaseRT = nullptr;
+	IDepthStencil* m_inputBaseDS = nullptr;
 };

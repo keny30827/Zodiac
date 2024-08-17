@@ -261,7 +261,7 @@ void CBasicSprite::Update()
 void CBasicSprite::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper)
 {
 	// 情報が足らない.
-	VRETURN(m_inputBaseRT);
+	VRETURN(m_inputBaseRT || m_inputBaseDS);
 
 	// コマンドリストへの設定.
 	{
@@ -278,7 +278,12 @@ void CBasicSprite::RenderSetup(CCommandWrapper& commandWrapper, CHeapWrapper& he
 			// シーン情報.
 			commandWrapper.SetGraphicsRootDescriptorTable(0, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_cbvHeapPosition));
 			// 入力画像.
-			commandWrapper.SetGraphicsRootDescriptorTable(1, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputBaseRT->GetSrvHeapPosition()));
+			if (m_inputBaseRT) {
+				commandWrapper.SetGraphicsRootDescriptorTable(1, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputBaseRT->GetSrvHeapPosition()));
+			}
+			else {
+				commandWrapper.SetGraphicsRootDescriptorTable(1, heapWrapper.GetGPUDescriptorHandle(HEAP_CATEGORY_HUGE, m_inputBaseDS->GetSrvHeapPosition()));
+			}
 		}
 	}
 }

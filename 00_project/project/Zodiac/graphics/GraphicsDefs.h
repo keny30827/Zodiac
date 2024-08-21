@@ -317,6 +317,13 @@ public:
 	virtual void Render(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
 };
 
+// 平面用.
+class IPlane {
+public:
+	virtual void Update() = 0;
+	virtual void Render(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
+};
+
 // ====================================================.
 // MMD用のデータ受け渡し用構造体.
 // MMDはマテリアル情報がファイル単位に分かれていないので....

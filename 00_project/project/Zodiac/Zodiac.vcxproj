@@ -179,6 +179,7 @@
     <ClCompile Include="object\material\Material.cpp" />
     <ClCompile Include="object\model\Model.cpp" />
     <ClCompile Include="object\motion\Motion.cpp" />
+    <ClCompile Include="object\plane\Plane.cpp" />
     <ClCompile Include="object\player\Player.cpp" />
     <ClCompile Include="object\render_target\RenderTarget.cpp" />
     <ClCompile Include="object\render_target\Texture.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="object\material\Material.h" />
     <ClInclude Include="object\model\Model.h" />
     <ClInclude Include="object\motion\Motion.h" />
+    <ClInclude Include="object\plane\Plane.h" />
     <ClInclude Include="object\player\Player.h" />
     <ClInclude Include="object\render_target\RenderTarget.h" />
     <ClInclude Include="object\render_target\Texture.h" />

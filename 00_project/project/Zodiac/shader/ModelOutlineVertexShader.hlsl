@@ -11,7 +11,6 @@ OutputVSPS main(
 	)
 {
 	OutputVSPS output;
-
 	// ローカル座標での位置計算.
 	float fBoneWeight = boneW / 100.0f;
 	matrix ipBone = (bone[boneNo[0]] * fBoneWeight) + (bone[boneNo[1]] * (1.0f - fBoneWeight));

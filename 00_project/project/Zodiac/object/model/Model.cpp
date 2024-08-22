@@ -312,6 +312,11 @@ void CModel::RenderDepthPrepass(CCommandWrapper& commandWrapper, CHeapWrapper& h
 
 void CModel::RenderOutline(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor)
 {
+	// 不要.
+	if (m_outlineScale <= 0.0f) {
+		return;
+	}
+
 	// コマンドリストにコマンドを積みましょう.
 	{
 		// パイプライン設定.

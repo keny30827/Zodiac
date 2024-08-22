@@ -1,10 +1,12 @@
 struct OutputVSPS {
 	float4 pos : SV_POSITION;
 	float4 normal : NORMAL0;
-	float4 viewNormal : NORMAL1;
-	float4 ray : RAY;
 	float2 uv : TEXCOORD;
-	uint instID : SV_InstanceID;
+};
+
+struct OutputRenderTarget {
+	float4 final : SV_TARGET0;
+	float4 objectInfo : SV_TARGET1;
 };
 
 cbuffer cbuff0 : register(b0) {

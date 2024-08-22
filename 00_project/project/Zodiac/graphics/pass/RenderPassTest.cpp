@@ -107,6 +107,27 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 		graphicsController.EndScene(pList, COUNTOF(pList), pColor, &scene.GetDofDepth());
 	}
 
+	IRenderTarget* pOutlineList[] = {
+		&scene.GetColor(),
+		&scene.GetObjectInfo(),
+	};
+	GAME_COLOR pOutlineColor[] = {
+		GAME_COLOR::GAME_COLOR_INVALID,
+		GAME_COLOR::GAME_COLOR_INVALID,
+	};
+	// アウトライン.
+	// 背面法なのでモデル描画.
+	{
+		if (graphicsController.BeginScene(pOutlineList, COUNTOF(pOutlineList), pOutlineColor, &scene.GetDepthPrepass(), false)) {
+			for (uint32_t n = 0; n < scene.GetModelNum(); n++) {
+				IModel* pModel = const_cast<IModel*>(scene.GetModel(n));
+				pModel->SetDepthStencil(&scene.GetShadowMap());
+				pModel->RenderOutline(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), *(scene.GetMainCamera()), &viewPort, &scissor);
+			}
+			graphicsController.EndScene(pOutlineList, COUNTOF(pOutlineList), pOutlineColor, &scene.GetDepthPrepass());
+		}
+	}
+
 	IRenderTarget* pDecalList[] = {
 		&scene.GetColor(),
 		&scene.GetObjectInfo(),

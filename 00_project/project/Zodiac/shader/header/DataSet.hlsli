@@ -37,6 +37,8 @@ cbuffer cbuff0 : register(b0) {
 	matrix lightView;
 	matrix bone[256];
 	float3 eye;
+	float outlineScale;
+	float fov;
 };
 cbuffer cbuff1 : register(b1) {
 	float4 diffuse;

@@ -239,6 +239,7 @@ public:
 	virtual void Render(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
 	virtual void RenderShadow(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
 	virtual void RenderDepthPrepass(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
+	virtual void RenderOutline(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) = 0;
 
 public:
 	virtual const IVertex* GetVertexList() const = 0;
@@ -405,6 +406,8 @@ struct SShaderCoordinateInfo {
 	DirectX::XMMATRIX lightView = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX bone[256] = { DirectX::XMMatrixIdentity() };
 	DirectX::XMFLOAT3 eye = {};
+	float outlineScale = 1.0f;
+	float fov = DirectX::XM_PIDIV2;
 };
 
 struct SShaderDecalInfo {

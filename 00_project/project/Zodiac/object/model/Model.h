@@ -43,6 +43,7 @@ public:
 	virtual void Render(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) override;
 	virtual void RenderShadow(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) override;
 	virtual void RenderDepthPrepass(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) override;
+	virtual void RenderOutline(CCommandWrapper& commandWrapper, CHeapWrapper& heapWrapper, const ICamera& rCamera, const D3D12_VIEWPORT* pViewPort, const D3D12_RECT* pScissor) override;
 
 private:
 	void MapVertexData();
@@ -300,6 +301,11 @@ public:
 	void SetRot(const DirectX::XMMATRIX& mat) { m_rot = mat; }
 	void SetPos(const DirectX::XMMATRIX& mat) { m_pos = mat; }
 
+	float GetOutlineScale() const { return m_outlineScale; }
+#if defined(DEBUG)
+	void OnDebugInputOutlineScale(float f) { m_outlineScale = f; }
+#endif
+
 private:
 	void AddVertex(const CVertex& vertex) { m_vertexList.push_back(vertex); }
 	void AddIndex(const uint16_t index) { m_indexList.push_back(index); }
@@ -330,6 +336,11 @@ private:
 	bool BuildDepthPrepassShader(CGraphicsController& graphicsController);
 	bool BuildDepthPrepassRootSignature(CGraphicsController& graphicsController);
 	bool BuildDepthPrepassPipelineState(CGraphicsController& graphicsController);
+
+	// アウトライン用.
+	bool BuildOutlineShader(CGraphicsController& graphicsController);
+	bool BuildOutlineRootSignature(CGraphicsController& graphicsController);
+	bool BuildOutlinePipelineState(CGraphicsController& graphicsController);
 
 private:
 	// CPU側で使うモデル情報.
@@ -363,4 +374,11 @@ private:
 	ID3D12PipelineState* m_pDepthPrepassPipelineState = nullptr;
 	ID3D12RootSignature* m_pDepthPrepassRootSignature = nullptr;
 	ID3DBlob* m_pDepthPrepassVertexShader = nullptr;
+	// アウトライン用.
+	ID3D12PipelineState* m_pOutlinePipelineState = nullptr;
+	ID3D12RootSignature* m_pOutlineRootSignature = nullptr;
+	ID3DBlob* m_pOutlineVertexShader = nullptr;
+	ID3DBlob* m_pOutlinePixelShader = nullptr;
+
+	float m_outlineScale = 0.001f;
 };

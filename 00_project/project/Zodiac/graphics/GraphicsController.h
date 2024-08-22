@@ -228,7 +228,7 @@ public:
 	bool BeginScene(IRenderTarget* pRT, IDepthStencil* pDS = nullptr);
 	bool EndScene(IRenderTarget* pRT, IDepthStencil* pDS = nullptr);
 
-	bool BeginScene(IRenderTarget** pRTList, const int nListNum, GAME_COLOR* color, IDepthStencil* pDS = nullptr);
+	bool BeginScene(IRenderTarget** pRTList, const int nListNum, GAME_COLOR* color, IDepthStencil* pDS = nullptr, const bool isClearDS = true);
 	bool EndScene(IRenderTarget** pRTList, const int nListNum, GAME_COLOR* color, IDepthStencil* pDS = nullptr);
 
 public:

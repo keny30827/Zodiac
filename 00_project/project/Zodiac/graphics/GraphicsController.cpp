@@ -599,7 +599,7 @@ bool CGraphicsController::EndScene(IRenderTarget* pRT, IDepthStencil* pDS)
 	return true;
 }
 
-bool CGraphicsController::BeginScene(IRenderTarget** pRTList, const int nListNum, GAME_COLOR* pColor, IDepthStencil* pDS)
+bool CGraphicsController::BeginScene(IRenderTarget** pRTList, const int nListNum, GAME_COLOR* pColor, IDepthStencil* pDS, const bool isClearDS)
 {
 	RETURN_RET(pRTList, false);
 	RETURN_RET(nListNum > 0, false);
@@ -621,7 +621,9 @@ bool CGraphicsController::BeginScene(IRenderTarget** pRTList, const int nListNum
 			GetCPUDescriptorHandle(pDS->GetDsvHeapCategory(), pDS->GetDsvHeapPosition()) :
 			m_heapWrapper.GetCPUDescriptorHandle(HEAP_CATEGORY_DEPTH_STENCIL, 0);
 		// 内容はクリアしておく.
-		m_commandWrapper.ClearDepthStencil(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0);
+		if (isClearDS) {
+			m_commandWrapper.ClearDepthStencil(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0);
+		}
 	}
 	
 	// レンダーターゲットの状態変更クリア諸々.

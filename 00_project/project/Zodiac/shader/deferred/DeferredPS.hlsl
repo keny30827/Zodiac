@@ -5,7 +5,13 @@ float4 main(OutputVSPS input) : SV_TARGET
 	float4 objectInfo = psGBufObjectInfo.Sample(psSamp, input.uv);
 	
 	if (objectInfo.x < 1.0f) {
-		discard;
+		// アウトライン塗なので、カラー単色でそのまま出す.
+		if (objectInfo.x >= 0.5f) {
+			return psGBufColor.Sample(psSamp, input.uv);
+		}
+		else {
+			discard;
+		}
 	}
 
 	float4 color = psGBufColor.Sample(psSamp, input.uv);

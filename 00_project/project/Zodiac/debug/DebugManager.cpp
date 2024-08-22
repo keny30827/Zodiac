@@ -75,6 +75,14 @@ void CDebugManager::UpdateGUI(CApplication& app)
 					app.GetPlayer().OnDebugInputPos(pos);
 				}
 			}
+			{
+				bool isInput = false;
+				float scale = app.GetPlayer().GetModel().GetOutlineScale();
+				isInput = ImGui::InputFloat(u8"player outline scale", &scale, 0.001f, 1.5f);
+				if (isInput) {
+					const_cast<CModel&>(app.GetPlayer().GetModel()).OnDebugInputOutlineScale(scale);
+				}
+			}
 		}
 	}
 	ImGui::End();

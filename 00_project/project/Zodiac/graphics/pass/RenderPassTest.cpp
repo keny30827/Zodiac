@@ -4,6 +4,7 @@
 #include "../shader/ShaderManager.h"
 
 #include "../../object/decal/Decal.h"
+#include "../../object/plane/Plane.h"
 
 void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsController, CShaderManager& shaderMgr)
 {
@@ -79,45 +80,83 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 		graphicsController.EndScene(&rt, &scene.GetShadowMap());
 	}
 
-	IRenderTarget* pList[] = {
-		&scene.GetTestRT(),
-		&scene.GetColor(),
-		&scene.GetNormal(),
-		&scene.GetHighBrightness(),
-		&scene.GetObjectInfo(),
-		&scene.GetSpecular(),
-		&scene.GetWorldPos(),
-	};
-	GAME_COLOR pColor[] = {
-		GAME_COLOR::GAME_COLOR_WHITE,
-		GAME_COLOR::GAME_COLOR_WHITE,
-		GAME_COLOR::GAME_COLOR_BLACK,
-		GAME_COLOR::GAME_COLOR_BLACK,
-		GAME_COLOR::GAME_COLOR_BLACK,
-		GAME_COLOR::GAME_COLOR_BLACK,
-		GAME_COLOR::GAME_COLOR_BLACK,
-	};
-	if (graphicsController.BeginScene(pList, COUNTOF(pList), pColor, &scene.GetDofDepth())) {
-		// オブジェクト描画.
-		for (uint32_t n = 0; n < scene.GetModelNum(); n++) {
-			IModel* pModel = const_cast<IModel*>(scene.GetModel(n));
-			pModel->SetDepthStencil(&scene.GetShadowMap());
-			pModel->Render(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), *(scene.GetMainCamera()), &viewPort, &scissor);
+	// オブジェクト描画.
+	{
+		IRenderTarget* pList[] = {
+			&scene.GetTestRT(),
+			&scene.GetColor(),
+			&scene.GetNormal(),
+			&scene.GetHighBrightness(),
+			&scene.GetObjectInfo(),
+			&scene.GetSpecular(),
+			&scene.GetWorldPos(),
+		};
+		GAME_COLOR pColor[] = {
+			GAME_COLOR::GAME_COLOR_WHITE,
+			GAME_COLOR::GAME_COLOR_WHITE,
+			GAME_COLOR::GAME_COLOR_BLACK,
+			GAME_COLOR::GAME_COLOR_BLACK,
+			GAME_COLOR::GAME_COLOR_BLACK,
+			GAME_COLOR::GAME_COLOR_BLACK,
+			GAME_COLOR::GAME_COLOR_BLACK,
+		};
+		if (graphicsController.BeginScene(pList, COUNTOF(pList), pColor, &scene.GetDofDepth())) {
+			for (uint32_t n = 0; n < scene.GetModelNum(); n++) {
+				IModel* pModel = const_cast<IModel*>(scene.GetModel(n));
+				pModel->SetDepthStencil(&scene.GetShadowMap());
+				pModel->Render(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), *(scene.GetMainCamera()), &viewPort, &scissor);
+			}
+			graphicsController.EndScene(pList, COUNTOF(pList), pColor, &scene.GetDofDepth());
 		}
-		graphicsController.EndScene(pList, COUNTOF(pList), pColor, &scene.GetDofDepth());
 	}
 
-	IRenderTarget* pOutlineList[] = {
-		&scene.GetColor(),
-		&scene.GetObjectInfo(),
-	};
-	GAME_COLOR pOutlineColor[] = {
-		GAME_COLOR::GAME_COLOR_INVALID,
-		GAME_COLOR::GAME_COLOR_INVALID,
-	};
+	// 平面.
+	{
+		IRenderTarget* pList[] = {
+			&scene.GetTestRT(),
+			&scene.GetColor(),
+			&scene.GetNormal(),
+			&scene.GetHighBrightness(),
+			&scene.GetObjectInfo(),
+			&scene.GetSpecular(),
+		};
+		GAME_COLOR pColor[] = {
+			GAME_COLOR::GAME_COLOR_INVALID,
+			GAME_COLOR::GAME_COLOR_INVALID,
+			GAME_COLOR::GAME_COLOR_INVALID,
+			GAME_COLOR::GAME_COLOR_INVALID,
+			GAME_COLOR::GAME_COLOR_INVALID,
+			GAME_COLOR::GAME_COLOR_INVALID,
+		};
+		if (graphicsController.BeginScene(pList, COUNTOF(pList), pColor, &scene.GetDepthPrepass(), false)) {
+			for (uint32_t n = 0; n < scene.GetPlaneNum(); n++) {
+				auto* pShader = shaderMgr.GetSSRShader();
+				pShader->SetCameraInfo(*scene.GetMainCamera());
+				pShader->SetWindowInfo(static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
+				pShader->SetInputDepthRT(&scene.GetDepthPrepass());
+				pShader->SetInputBaseRT(&scene.GetColor());
+				pShader->SetInputNormalRT(&scene.GetNormal());
+				pShader->SetInputObjectInfoRT(&scene.GetObjectInfo());
+				pShader->SetInputSpecularRT(&scene.GetSpecular());
+				C3DPlane* pPlane = static_cast<C3DPlane*>(const_cast<IPlane*>(scene.GetPlane(n)));
+				pPlane->SetShader(pShader);
+				pPlane->Render(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), &viewPort, &scissor);
+			}
+			graphicsController.EndScene(pList, COUNTOF(pList), pColor, &scene.GetDepthPrepass());
+		}
+	}
+
 	// アウトライン.
 	// 背面法なのでモデル描画.
 	{
+		IRenderTarget* pOutlineList[] = {
+			&scene.GetColor(),
+			&scene.GetObjectInfo(),
+		};
+		GAME_COLOR pOutlineColor[] = {
+			GAME_COLOR::GAME_COLOR_INVALID,
+			GAME_COLOR::GAME_COLOR_INVALID,
+		};
 		if (graphicsController.BeginScene(pOutlineList, COUNTOF(pOutlineList), pOutlineColor, &scene.GetDepthPrepass(), false)) {
 			for (uint32_t n = 0; n < scene.GetModelNum(); n++) {
 				IModel* pModel = const_cast<IModel*>(scene.GetModel(n));
@@ -128,25 +167,27 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 		}
 	}
 
-	IRenderTarget* pDecalList[] = {
-		&scene.GetColor(),
-		&scene.GetObjectInfo(),
-	};
-	GAME_COLOR pDecalColor[] = {
-		GAME_COLOR::GAME_COLOR_INVALID,
-		GAME_COLOR::GAME_COLOR_INVALID,
-	};
 	// デカール.
-	if (graphicsController.BeginScene(pDecalList, COUNTOF(pDecalList), pDecalColor)) {
-		auto* pShader = shaderMgr.Get2DDecalShader();
-		pShader->SetShaderInfo(*scene.GetMainCamera());
-		pShader->SetInputBaseRT(&scene.GetNormal());
-		pShader->SetInputObjInfoRT(&scene.GetObjectInfo());
-		pShader->SetInputWorldPosRT(&scene.GetWorldPos());
-		pShader->SetInputColorRT(&scene.GetColor());
-		C2DDecal* pDecal = static_cast<C2DDecal*>(const_cast<IDecal*>(scene.Get2DDecal()));
-		pDecal->SetShader(pShader);
-		pDecal->Render(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), &viewPort, &scissor);
-		graphicsController.EndScene(pDecalList, COUNTOF(pDecalList), pDecalColor);
+	{
+		IRenderTarget* pDecalList[] = {
+			&scene.GetColor(),
+			&scene.GetObjectInfo(),
+		};
+		GAME_COLOR pDecalColor[] = {
+			GAME_COLOR::GAME_COLOR_INVALID,
+			GAME_COLOR::GAME_COLOR_INVALID,
+		};
+		if (graphicsController.BeginScene(pDecalList, COUNTOF(pDecalList), pDecalColor)) {
+			auto* pShader = shaderMgr.Get2DDecalShader();
+			pShader->SetShaderInfo(*scene.GetMainCamera());
+			pShader->SetInputBaseRT(&scene.GetNormal());
+			pShader->SetInputObjInfoRT(&scene.GetObjectInfo());
+			pShader->SetInputWorldPosRT(&scene.GetWorldPos());
+			pShader->SetInputColorRT(&scene.GetColor());
+			C2DDecal* pDecal = static_cast<C2DDecal*>(const_cast<IDecal*>(scene.Get2DDecal()));
+			pDecal->SetShader(pShader);
+			pDecal->Render(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), &viewPort, &scissor);
+			graphicsController.EndScene(pDecalList, COUNTOF(pDecalList), pDecalColor);
+		}
 	}
 }

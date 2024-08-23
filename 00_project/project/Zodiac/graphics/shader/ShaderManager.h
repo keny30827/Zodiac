@@ -10,6 +10,7 @@
 #include "deferred/DeferredRender.h"
 #include "decal/2DDecal.h"
 #include "light_culling/LightCulling.h"
+#include "ssr/SSR.h"
 
 class CGraphicsController;
 class CShaderManager {
@@ -30,6 +31,7 @@ public:
 	CDeferredRender* GetDeferredRenderShader() { return &m_deferredRender; }
 	C2DDecalShader* Get2DDecalShader() { return &m_2dDecal; }
 	CLightCulling* GetLightCullingShader() { return &m_lightCulling; }
+	CSSR* GetSSRShader() { return &m_ssr; }
 
 private:
 	CGaussianBlur m_gaussianBlur;
@@ -40,4 +42,5 @@ private:
 	CDeferredRender m_deferredRender;
 	C2DDecalShader m_2dDecal;
 	CLightCulling m_lightCulling;
+	CSSR m_ssr;
 };

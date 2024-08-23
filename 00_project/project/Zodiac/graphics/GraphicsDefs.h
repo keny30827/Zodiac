@@ -410,6 +410,17 @@ struct SShaderCoordinateInfo {
 	float fov = DirectX::XM_PIDIV2;
 };
 
+struct SShaderPlaneInfo {
+	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX viewInv = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX proj = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX projInv = DirectX::XMMatrixIdentity();
+	DirectX::XMFLOAT2 screenParam = {};
+	float padding[2] = {};
+	DirectX::XMFLOAT3 eye = {};
+};
+
 struct SShaderDecalInfo {
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX view = DirectX::XMMatrixIdentity();

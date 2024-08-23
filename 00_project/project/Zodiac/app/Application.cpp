@@ -41,6 +41,14 @@ bool CApplication::Init(SApplicationOption option)
 	if (!m_2dDecal.Init(m_graphicsController, 0.0f, 5.0f, 0.0f, 5.0f, 5.0f)) {
 		return false;
 	}
+	{
+		DirectX::XMFLOAT3 pos(0.0f, 0.0f, 0.0f);
+		DirectX::XMFLOAT3 rot(0.0f, 0.0f, 0.0f);
+		DirectX::XMFLOAT2 size(10.0f, 10.0f);
+		if (!m_3dPlane.Init(m_graphicsController, pos, rot, size)) {
+			return false;
+		}
+	}
 #if defined(DEBUG)
 	if (!m_debugManager.Init(m_graphicsController, m_hWnd)) {
 		return false;
@@ -185,6 +193,7 @@ void CApplication::UpdateGame()
 		for (int n = 0; n < COUNTOF(m_light); n++) {
 			m_scene.AddLight(&m_light[n]);
 		}
+		m_scene.AddPlane(&m_3dPlane);
 		m_scene.SetMainCamera(&m_camera);
 		m_scene.SetFrameBuffer(&m_sprite);
 		m_scene.Set2DDecal(&m_2dDecal);

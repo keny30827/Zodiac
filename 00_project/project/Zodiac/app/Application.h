@@ -13,6 +13,7 @@
 #include "../object/camera/Camera.h"
 #include "../object/sprite/Sprite.h"
 #include "../object/decal/Decal.h"
+#include "../object/plane/Plane.h"
 
 #if defined(DEBUG)
 #include "../debug/DebugManager.h"
@@ -77,6 +78,7 @@ private:
 	CCamera m_camera;
 	CSprite m_sprite;
 	C2DDecal m_2dDecal;
+	C3DPlane m_3dPlane;
 	SLightInfo m_light[5];
 
 #if defined(DEBUG)

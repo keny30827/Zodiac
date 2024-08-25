@@ -28,6 +28,7 @@ public:
 	CRenderTarget& GetDof() { return m_dof; }
 	CRenderTarget& GetSsao() { return m_ssao; }
 	CRenderTarget& GetObjectInfo() { return m_objectInfo; }
+	CRenderTarget& GetHierarchicalZ() { return m_his; }
 
 	IDepthStencil& GetShadowMap() { return m_shadowMap; }
 	IDepthStencil& GetDofDepth() { return m_dofDepth; }
@@ -93,6 +94,8 @@ private:
 	CRenderTarget m_ssao;
 	// オブジェクト情報用.
 	CRenderTarget m_objectInfo;
+	// HiZ用.
+	CRenderTarget m_his;
 
 	// 深度関連.
 	CShadowMap m_shadowMap;

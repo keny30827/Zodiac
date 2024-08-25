@@ -75,6 +75,24 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 	RenderSsao(scene, graphicsController, shaderMgr, viewPort, scissor, scene.GetMainCamera());
 #endif
 
+	// HiZ.
+	{
+		auto* pShader = shaderMgr.GetHierarchicalZShader();
+		auto& rt = scene.GetHierarchicalZ();
+		if (graphicsController.BeginScene(&rt)) {
+			pShader->SetInputDepthRT(&scene.GetDepthPrepass());
+			pShader->SetInputCamera(*scene.GetMainCamera());
+			pShader->SetViewportSize(viewPort.Width, viewPort.Height);
+			m_postEffectBuffer.SetShader(pShader);
+			m_postEffectBuffer.Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
+			graphicsController.EndScene(&rt);
+		}
+	}
+
 	// バックバッファに書き込み.
 	if (graphicsController.BeginScene(true)) {
 		auto* pShader = shaderMgr.GetBasicSpriteShader();
@@ -106,7 +124,7 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 		}
 #if defined(ENABLE_GAUSSIAN_HIGH_BRIGHT)
 		{
-			pShader->SetInputBaseRT(&scene.GetHighBrightnessShrinkBuffer());
+			pShader->SetInputBaseRT(&scene.GetHierarchicalZ());
 			m_highBright.SetShader(pShader);
 			m_highBright.Render(
 				graphicsController.GetCommandWrapper(),
@@ -165,6 +183,7 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 			}
 			pDeferredShader->SetScreenParam(static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
 			pDeferredShader->SetLightInfo(scene.GetLight(0), scene.GetLightNum());
+#if 1
 			CSprite* pSprite = static_cast<CSprite*>(const_cast<ISprite*>(scene.GetFrameBuffer()));
 			pSprite->SetShader(pDeferredShader);
 			pSprite->Render(
@@ -172,6 +191,16 @@ void CRenderPassSprite::Render(CScene& scene, CGraphicsController& graphicsContr
 				graphicsController.GetHeapWrapper(),
 				&viewPort,
 				&scissor);
+#else
+			CSprite* pSprite = static_cast<CSprite*>(const_cast<ISprite*>(scene.GetFrameBuffer()));
+			pShader->SetInputBaseRT(&scene.GetHierarchicalZ());
+			pSprite->SetShader(pShader);
+			pSprite->Render(
+				graphicsController.GetCommandWrapper(),
+				graphicsController.GetHeapWrapper(),
+				&viewPort,
+				&scissor);
+#endif
 	}
 #if 0
 		ISprite* pSprite = const_cast<ISprite*>(scene.GetFrameBuffer());

@@ -11,6 +11,7 @@
 #include "decal/2DDecal.h"
 #include "light_culling/LightCulling.h"
 #include "ssr/SSR.h"
+#include "hierarchical_z/HierarchicalZ.h"
 
 class CGraphicsController;
 class CShaderManager {
@@ -32,6 +33,7 @@ public:
 	C2DDecalShader* Get2DDecalShader() { return &m_2dDecal; }
 	CLightCulling* GetLightCullingShader() { return &m_lightCulling; }
 	CSSR* GetSSRShader() { return &m_ssr; }
+	CHierarchicalZ* GetHierarchicalZShader() { return &m_hierarchicalZ; }
 
 private:
 	CGaussianBlur m_gaussianBlur;
@@ -43,4 +45,5 @@ private:
 	C2DDecalShader m_2dDecal;
 	CLightCulling m_lightCulling;
 	CSSR m_ssr;
+	CHierarchicalZ m_hierarchicalZ;
 };

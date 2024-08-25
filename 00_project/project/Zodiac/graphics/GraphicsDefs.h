@@ -461,6 +461,16 @@ struct SShaderSpriteInfo {
 	int lightNum = 0;
 };
 
+struct SShaderSimpleSpriteInfo {
+	DirectX::XMMATRIX toScreen = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX proj = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX projInv = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX viewInv = DirectX::XMMatrixIdentity();
+	DirectX::XMFLOAT3 eye = {};
+	float padding_ = 0.0f;
+	DirectX::XMFLOAT2 screenParam = {};
+};
+
 struct SShaderGaussianInfo {
 	float weight[8] = {};
 	float isEnableX = 0.0f;

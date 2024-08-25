@@ -159,6 +159,7 @@
     <ClCompile Include="graphics\shader\decal\2DDecal.cpp" />
     <ClCompile Include="graphics\shader\deferred\DeferredRender.cpp" />
     <ClCompile Include="graphics\shader\dof\DepthOfView.cpp" />
+    <ClCompile Include="graphics\shader\hierarchical_z\HierarchicalZ.cpp" />
     <ClCompile Include="graphics\shader\light_culling\LightCulling.cpp" />
     <ClCompile Include="graphics\shader\ShaderManager.cpp" />
     <ClCompile Include="graphics\shader\ssao\SSAO.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="graphics\shader\decal\2DDecal.h" />
     <ClInclude Include="graphics\shader\deferred\DeferredRender.h" />
     <ClInclude Include="graphics\shader\dof\DepthOfView.h" />
+    <ClInclude Include="graphics\shader\hierarchical_z\HierarchicalZ.h" />
     <ClInclude Include="graphics\shader\light_culling\LightCulling.h" />
     <ClInclude Include="graphics\shader\ShaderManager.h" />
     <ClInclude Include="graphics\shader\ssao\SSAO.h" />
@@ -396,6 +398,26 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="shader\hierarchical_z\HierarchicalZPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="shader\hierarchical_z\HierarchicalZVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="shader\light_culling\LightCullingCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
@@ -498,6 +520,7 @@
     <None Include="shader\header\ModelOutlineDataSet.hlsli" />
     <None Include="shader\header\ShadowDataSet.hlsli" />
     <None Include="shader\header\SpriteDataSet.hlsli" />
+    <None Include="shader\hierarchical_z\HierarchicalZDataSet.hlsli" />
     <None Include="shader\light_culling\LightCullingDataSet.hlsli" />
     <None Include="shader\ssao\SSAODataSet.hlsli" />
     <None Include="shader\ssr\SSRDataSet.hlsli" />

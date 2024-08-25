@@ -21,11 +21,13 @@ bool CScene::Init(CGraphicsController& rGraphicsController, uint32_t width, uint
 	m_ssaoDepth.Init(rGraphicsController, width, height);
 	m_objectInfo.Init(rGraphicsController, width, height);
 	m_depthPrepass.Init(rGraphicsController, width, height);
+	m_his.Init(rGraphicsController, width, height);
 	return true;
 }
 
 void CScene::Term()
 {
+	m_his.Term();
 	m_depthPrepass.Term();
 	m_objectInfo.Term();
 	m_ssaoDepth.Term();

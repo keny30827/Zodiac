@@ -47,6 +47,7 @@ float4 main(OutputVSPS input) : SV_TARGET
 	//float4 lightColor = float4(0.8f, 0.8f, 0.8f, 1.0f);
 
 	// ヒットしているライトの分だけ計算する.
+	int applyLightNum = 0;
 	float4 resultColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	for (uint n = 0; n < lightNum; n++) {
 		const int lightIndex = int(rwLightIndices[tileIndex + n]);
@@ -57,7 +58,7 @@ float4 main(OutputVSPS input) : SV_TARGET
 		SLightInfo lightInfo = light[lightIndex];
 		float dist = abs(length(lightInfo.pos - worldPos));
 		float lightRate = max(lightInfo.attenuationDistance - dist, 0.0f) / lightInfo.attenuationDistance;
-		float4 lightColor = lightInfo.color;;// *lightRate;
+		float4 lightColor = lightInfo.color * lightRate;
 
 		// 法線と内積とった結果を使う.ランバートの余弦則.
 		float brightnessValue = dot(normalize(lightInfo.pos - worldPos), normal);
@@ -71,10 +72,13 @@ float4 main(OutputVSPS input) : SV_TARGET
 			float4 ambColor = lightColor * ambient;
 
 			resultColor += (diffuseColor + specularColor + ambColor);
+			applyLightNum++;
 		}
 	}
 
-	resultColor /= lightNum;
+	if (applyLightNum > 0) {
+		resultColor /= applyLightNum;
+	}
 
 	// SSAOの結果も入れる.
 	float4 ssao = psGBufSSAO.Sample(psSamp, input.uv);

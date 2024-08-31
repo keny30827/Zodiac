@@ -45,6 +45,15 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 				IModel* pModel = const_cast<IModel*>(scene.GetModel(n));
 				pModel->RenderDepthPrepass(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), *(scene.GetMainCamera()), &viewPort, &scissor);
 			}
+			// •½–Ê.
+			for (uint32_t n = 0; n < scene.GetPlaneNum(); n++) {
+				auto* pShader = shaderMgr.GetBasicModel();
+				pShader->SetCameraInfo(*scene.GetMainCamera());
+				pShader->SetWindowInfo(static_cast<float>(scDesc.Width), static_cast<float>(scDesc.Height));
+				C3DPlane* pPlane = static_cast<C3DPlane*>(const_cast<IPlane*>(scene.GetPlane(n)));
+				pPlane->SetShader(pShader);
+				pPlane->Render(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), &viewPort, &scissor);
+			}
 			graphicsController.EndScene(&rt, &scene.GetDepthPrepass());
 		}
 	}
@@ -128,7 +137,7 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 			GAME_COLOR::GAME_COLOR_INVALID,
 			GAME_COLOR::GAME_COLOR_INVALID,
 		};
-		if (graphicsController.BeginScene(pList, COUNTOF(pList), pColor, &scene.GetDepthPrepass(), false)) {
+		if (graphicsController.BeginScene(pList, COUNTOF(pList), pColor, &scene.GetDofDepth(), false)) {
 			for (uint32_t n = 0; n < scene.GetPlaneNum(); n++) {
 				auto* pShader = shaderMgr.GetSSRShader();
 				pShader->SetCameraInfo(*scene.GetMainCamera());
@@ -142,7 +151,7 @@ void CRenderPassTest::Render(CScene& scene, CGraphicsController& graphicsControl
 				pPlane->SetShader(pShader);
 				pPlane->Render(graphicsController.GetCommandWrapper(), graphicsController.GetHeapWrapper(), &viewPort, &scissor);
 			}
-			graphicsController.EndScene(pList, COUNTOF(pList), pColor, &scene.GetDepthPrepass());
+			graphicsController.EndScene(pList, COUNTOF(pList), pColor, &scene.GetDofDepth());
 		}
 	}
 

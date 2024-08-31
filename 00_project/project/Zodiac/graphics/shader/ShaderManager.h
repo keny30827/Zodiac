@@ -12,6 +12,7 @@
 #include "light_culling/LightCulling.h"
 #include "ssr/SSR.h"
 #include "hierarchical_z/HierarchicalZ.h"
+#include "basic_model/BasicModel.h"
 
 class CGraphicsController;
 class CShaderManager {
@@ -34,6 +35,7 @@ public:
 	CLightCulling* GetLightCullingShader() { return &m_lightCulling; }
 	CSSR* GetSSRShader() { return &m_ssr; }
 	CHierarchicalZ* GetHierarchicalZShader() { return &m_hierarchicalZ; }
+	CBasicModel* GetBasicModel() { return &m_basicModel; }
 
 private:
 	CGaussianBlur m_gaussianBlur;
@@ -46,4 +48,5 @@ private:
 	CLightCulling m_lightCulling;
 	CSSR m_ssr;
 	CHierarchicalZ m_hierarchicalZ;
+	CBasicModel m_basicModel;
 };

@@ -14,7 +14,9 @@ float4 main(OutputVSPS input) : SV_TARGET
 	// 深度と今のピクセルのUV値から、元の3D座標を復元する.
 	// クリップ空間だと、x = -1.0f ~ 1.0f, y = -1.0f ~ 1.0f, z = 0.0f ~ 1.0fになるはずなので,.
 	// UV値をXYに見立てて範囲を調整している.
-	float4 threeDPos = mul(projInv, float4(input.uv * 2.0f - 1.0f, z, 1.0f));
+	float3 clipPos = float3(input.uv * 2.0f - 1.0f, z);
+	clipPos.y *= -1.0f;
+	float4 threeDPos = mul(projInv, float4(clipPos, 1.0f));
 	threeDPos /= threeDPos.w;
 
 	// 今のピクセルの法線.
@@ -55,7 +57,9 @@ float4 main(OutputVSPS input) : SV_TARGET
 			clipPos /= clipPos.w;
 
 			// V(p, v) cosΘ.
-			ao += step(psDepthTex.Sample(psSamp, (clipPos.xy + 1.0f) * 0.5f), clipPos.z) * _dot;
+			float2 uv = (clipPos.xy + 1.0f) * 0.5f;
+			uv.y *= -1.0f;
+			ao += step(psDepthTex.Sample(psSamp, uv), clipPos.z) * _dot;
 		}
 		if (ao_norm > 0.0f) {
 			ao /= ao_norm;

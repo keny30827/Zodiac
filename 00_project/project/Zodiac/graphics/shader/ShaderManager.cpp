@@ -12,11 +12,13 @@ bool CShaderManager::Init(CGraphicsController& graphicsController)
 	m_lightCulling.Init(graphicsController);
 	m_ssr.Init(graphicsController);
 	m_hierarchicalZ.Init(graphicsController);
+	m_basicModel.Init(graphicsController);
 	return true;
 }
 
 void CShaderManager::Term()
 {
+	m_basicModel.Term();
 	m_hierarchicalZ.Term();
 	m_ssr.Term();
 	m_lightCulling.Term();

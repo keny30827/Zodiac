@@ -79,7 +79,7 @@ bool CApplication::Init(SApplicationOption option)
 			m_light[4].color = DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
 			for (int n = 0; n < COUNTOF(m_light); n++) {
-				m_light[n].attenuationDistance = 1000.0f;
+				m_light[n].attenuationDistance = 20.0f;
 			}
 		}
 	}

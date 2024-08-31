@@ -10,7 +10,6 @@ OutputRenderTarget BasicPS(OutputVSPS input)
 
 	// DirectXではY方向が負になるので反転させたものを使う.
 	float4 normal = normalize(input.normal);
-	normal.y *= -1.0f;
 
 	// 法線と内積とった結果を使う.ランバートの余弦則.
 	float brightnessValue = dot(normalize(lightPos), normal);

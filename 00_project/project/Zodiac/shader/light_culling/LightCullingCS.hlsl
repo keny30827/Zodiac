@@ -5,6 +5,7 @@ float3 ComputePositionInCamera(uint2 globalCoords, bool isFront)
 {
     float2 st = ((float2)globalCoords + 0.5) * rcp(screenParam.xy);
     st = st * 2.0f - 1.0f;
+    st.y *= -1.0f;
     float3 screenPos;
     screenPos.xy = st.xy;
     screenPos.z = (isFront) ? 0.0f : depthTex.Load(uint3(globalCoords, 0.0f));

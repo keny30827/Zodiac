@@ -26,6 +26,8 @@ float4 main(OutputVSPS input) : SV_TARGET
 	//float4 worldPos = psGBufWorldPos.Sample(psSamp, input.uv);
 	float4 worldPos = float4(input.uv * 2.0f - 1.0f, depth, 1.0f);
 	{
+		// UV座標からクリップ座標にする際にYが反転するので.
+		worldPos.y *= -1.0f;
 		worldPos = mul(projInv, worldPos);
 		worldPos /= worldPos.w;
 		worldPos = mul(viewInv, worldPos);
@@ -45,7 +47,7 @@ float4 main(OutputVSPS input) : SV_TARGET
 	//float4 lightColor = float4(0.8f, 0.8f, 0.8f, 1.0f);
 
 	// ヒットしているライトの分だけ計算する.
-	float4 resultColor = float4(0.0f, 0.0f, 0.0f, 1.0f);
+	float4 resultColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
 	for (uint n = 0; n < lightNum; n++) {
 		const int lightIndex = int(rwLightIndices[tileIndex + n]);
 		if (lightIndex < 0) {
@@ -55,7 +57,7 @@ float4 main(OutputVSPS input) : SV_TARGET
 		SLightInfo lightInfo = light[lightIndex];
 		float dist = abs(length(lightInfo.pos - worldPos));
 		float lightRate = max(lightInfo.attenuationDistance - dist, 0.0f) / lightInfo.attenuationDistance;
-		float4 lightColor = lightInfo.color;// *lightRate;
+		float4 lightColor = lightInfo.color;;// *lightRate;
 
 		// 法線と内積とった結果を使う.ランバートの余弦則.
 		float brightnessValue = dot(normalize(lightInfo.pos - worldPos), normal);
@@ -64,7 +66,7 @@ float4 main(OutputVSPS input) : SV_TARGET
 			// ディフューズ.
 			float4 diffuseColor = lightColor * color * brightness;
 			// スペキュラ.
-			float4 specularColor = lightColor * float4(specular.xyz * pow(saturate(dot(reflect(-(lightInfo.pos - worldPos), normal), -ray)), specular.a), 1.0f);
+			float4 specularColor = min(max(lightColor * float4(specular.xyz * pow(saturate(dot(reflect(-(lightInfo.pos - worldPos), normal), -ray)), specular.a), 1.0f), 0.0f), 1.0f);
 			// 環境光.
 			float4 ambColor = lightColor * ambient;
 

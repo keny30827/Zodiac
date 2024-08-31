@@ -8,8 +8,12 @@ OutputRenderTarget BasicPS(OutputVSPS input)
 	// 光源色.
 	float4 lightColor = float4(0.8f, 0.8f, 0.8f, 1.0f);
 
+	// DirectXではY方向が負になるので反転させたものを使う.
+	float4 normal = normalize(input.normal);
+	normal.y *= -1.0f;
+
 	// 法線と内積とった結果を使う.ランバートの余弦則.
-	float brightnessValue = dot(normalize(lightPos), normalize(input.normal));
+	float brightnessValue = dot(normalize(lightPos), normal);
 	float4 brightness = float4(brightnessValue, brightnessValue, brightnessValue, 1.0f);
 	if (isValidToon > 0.0f) {
 		float v = saturate(brightnessValue);
@@ -37,7 +41,7 @@ OutputRenderTarget BasicPS(OutputVSPS input)
 	float4 ambientColor = lightColor * ambientBase;
 
 	// スペキュラー.
-	float4 specularColor = lightColor * float4(specular.xyz * pow(saturate(dot(reflect(-lightPos, input.normal), -input.ray)), specular.a), 1.0f);
+	float4 specularColor = lightColor * float4(specular.xyz * pow(saturate(dot(reflect(-lightPos, normal), -input.ray)), specular.a), 1.0f);
 
 	float4 result = (lightColor * diffuseColor * texColor * spTexColor + spaTexColor + specularColor + ambientColor);
 
@@ -52,7 +56,7 @@ OutputRenderTarget BasicPS(OutputVSPS input)
 	output.final = result;
 	output.color = (diffuse * texColor * spTexColor) + spaTexColor;
 	output.specular = specular;
-	output.normal = (normalize(input.normal) + 1.0f) / 2.0f;
+	output.normal = (normal + 1.0f) / 2.0f;
 	output.worldPos = input.worldPos;
 	float Y = dot(result.rgb, float3(0.299, 0.587, 0.1114));
 	output.highBright = (Y > 0.9f) ? result : 0.0f;

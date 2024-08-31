@@ -15,7 +15,7 @@ float4 main(OutputVSPS input) : SV_TARGET
 	}
 
 	float4 color = psGBufColor.Sample(psSamp, input.uv);
-	float4 normal = normalize(psGBufNormal.Sample(psSamp, input.uv) * 2.0f - 1.0f);
+	float4 normal = psGBufNormal.Sample(psSamp, input.uv) * 2.0f - 1.0f;
 	float4 specular = psGBufSpecular.Sample(psSamp, input.uv);
 	float4 ambient = float4(objectInfo.yzw, 0.0f);
 	float depth = psGBufDepth.Sample(psSamp, input.uv);
@@ -55,7 +55,7 @@ float4 main(OutputVSPS input) : SV_TARGET
 		SLightInfo lightInfo = light[lightIndex];
 		float dist = abs(length(lightInfo.pos - worldPos));
 		float lightRate = max(lightInfo.attenuationDistance - dist, 0.0f) / lightInfo.attenuationDistance;
-		float4 lightColor = lightInfo.color * lightRate;
+		float4 lightColor = lightInfo.color;// *lightRate;
 
 		// 法線と内積とった結果を使う.ランバートの余弦則.
 		float brightnessValue = dot(normalize(lightInfo.pos - worldPos), normal);

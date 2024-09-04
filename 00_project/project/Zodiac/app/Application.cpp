@@ -44,7 +44,7 @@ bool CApplication::Init(SApplicationOption option)
 	{
 		DirectX::XMFLOAT3 pos(0.0f, 0.0f, 0.0f);
 		DirectX::XMFLOAT3 rot(0.0f, 0.0f, 0.0f);
-		DirectX::XMFLOAT2 size(10.0f, 10.0f);
+		DirectX::XMFLOAT2 size(100.0f, 100.0f);
 		if (!m_3dPlane.Init(m_graphicsController, pos, rot, size)) {
 			return false;
 		}
